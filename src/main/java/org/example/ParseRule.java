@@ -27,6 +27,8 @@ public class ParseRule {
         position+=1;
         String tableName = text.substring(position);
         checkIfTableExists(tableName);
+        Table table = Storage.hashMap.get(tableName);
+        System.out.println(table.columns);
     }
 
     public void parseUpdate(String text) {
