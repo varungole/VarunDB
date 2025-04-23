@@ -29,6 +29,7 @@ public class Parser {
             case "update" -> parseRule.parseUpdate(subText);
             case "insert" -> parseRule.parseInsert(subText);
             case "delete" -> parseRule.parseDelete(subText);
+            case "create" -> parseRule.parseCreate(subText);
             default -> throwError();
         }
     }

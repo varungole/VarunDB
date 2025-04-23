@@ -43,6 +43,12 @@ public class Tokenizer {
                 }
                 return new Token(TokenType.SELECT, "select");
             }
+            if(currentChar == 'C') {
+                for(int i=0;i<6;i++) {
+                    advance();
+                }
+                return new Token(TokenType.CREATE, "create");
+            }
             if(currentChar == 'U') {advance(); return new Token(TokenType.UPDATE, "update");}
             if(currentChar == 'I') {advance(); return new Token(TokenType.INSERT, "insert");}
             if(currentChar == 'D') {advance(); return new Token(TokenType.DELETE, "delete");}

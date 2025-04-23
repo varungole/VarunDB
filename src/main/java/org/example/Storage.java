@@ -10,11 +10,6 @@ public class Storage {
 
     public Storage() {
         hashMap = new HashMap<>();
-        List<String> columns = new ArrayList<>();
-        columns.add("id");
-        columns.add("name");
-        columns.add("age");
-        hashMap.put("EMPLOYEES", new Table("EMPLOYEES", columns));
     }
 }
 

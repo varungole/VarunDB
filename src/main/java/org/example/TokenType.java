@@ -5,6 +5,7 @@ public enum TokenType {
     INSERT,
     UPDATE,
     DELETE,
+    CREATE,
     NULL,
     EOF,
     STAR,

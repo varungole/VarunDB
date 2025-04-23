@@ -1,6 +1,5 @@
 package org.example;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class Utility {
@@ -21,6 +20,7 @@ public class Utility {
         hset.add("update");
         hset.add("insert");
         hset.add("delete");
+        hset.add("create");
     }
 
     public static void checkIfTableExists(String tableName) {
@@ -28,5 +28,18 @@ public class Utility {
             System.out.println("Table does not exist");
             System.exit(1);
         }
+    }
+
+    public static void checkComma(String text, int position) {
+        if(text.charAt(position) != ',' && text.charAt(position) != ')') throwError();
+    }
+
+    public static void throwTableExistsError(String tableName) {
+        System.out.println("Table " + tableName + " already exists!!");
+        System.exit(1);
+    }
+
+    public static void succesfullyCreatedTable(String tableName, int length) {
+        System.out.println("Inserted " + length + " columns into table " + tableName);
     }
 }

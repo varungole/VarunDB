@@ -2,6 +2,9 @@ package org.example;
 
 import static org.example.Utility.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ParseRule {
     public int position;
     Storage storage;
@@ -32,15 +35,48 @@ public class ParseRule {
     }
 
     public void parseUpdate(String text) {
-
     }
 
     public void parseInsert(String text) {
-
     }
 
     public void parseDelete(String text) {
 
     }
 
+    public void parseCreate(String text) {
+        int len = text.length();
+        String table = text.substring(position, position+5);
+        if(table.equals("table")) throwError();
+        position+=5;
+        checkWhiteSpace(position, len, text);
+        position++;
+        StringBuilder tableName = new StringBuilder();
+        while(text.charAt(position) != ' ') {
+            tableName.append(text.charAt(position));
+            position++;
+        }
+        checkWhiteSpace(position, len, text);
+        position++;
+        if(text.charAt(position) != '(') throwError();
+        position++;
+        List<String> columns = new ArrayList<>();
+        while(position != len && text.charAt(position) != ')') {
+            StringBuilder columnName = new StringBuilder();
+            while(Character.isAlphabetic(text.charAt(position))) {
+                columnName.append(text.charAt(position));
+                position++;
+            }
+            columns.add(columnName.toString());
+            checkComma(text, position);
+            System.out.println(position);
+            position++;
+        }
+        System.out.println(tableName.toString());
+        if(storage.hashMap.containsKey(tableName.toString())) {
+            throwTableExistsError(table);
+        }
+        storage.hashMap.put(table, new Table(table, columns));
+        succesfullyCreatedTable(tableName.toString(), columns.size());
+    }
 }
