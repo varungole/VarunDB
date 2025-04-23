@@ -7,12 +7,12 @@ import static org.example.Utility.throwError;
 
 public class Parser {
 
-    public int position;
-    public String text;
-    public char currentChar = '\0';
-    int totalLength;
-    public final HashSet<String> hset;
-    public ParseRule parseRule;
+    private int position;
+    private final String text;
+    private char currentChar = '\0';
+    private final int totalLength;
+    private final HashSet<String> hset;
+    private final ParseRule parseRule;
 
     public Parser(String text) {
         this.text = text;
@@ -47,7 +47,9 @@ public class Parser {
 
     public void parse() {
       Utility.setHash(hset);
-      if(position + 6 >=totalLength) throwError();
-      checkFirst(text.substring(0, 6));
+      int spaceIndex = text.indexOf(' ');
+      if(spaceIndex == -1) throwError();
+      String command = text.substring(0, spaceIndex);
+      checkFirst(command);
     }
 }

@@ -1,15 +1,11 @@
 package org.example;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Storage {
 
-    public static HashMap<String, Table> hashMap;
+    public static HashMap<String, Table> hashMap = new HashMap<>();
 
-    public Storage() {
-        hashMap = new HashMap<>();
-    }
+    private Storage() {}
 }
 

@@ -4,14 +4,13 @@ import static org.example.Utility.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ParseRule {
     public int position;
-    Storage storage;
 
     public ParseRule() {
         position = 0;
-        storage = new Storage();
     }
 
     public void parseSelect(String text) {
@@ -46,37 +45,49 @@ public class ParseRule {
 
     public void parseCreate(String text) {
         int len = text.length();
-        String table = text.substring(position, position+5);
-        if(table.equals("table")) throwError();
+
+        //expect the word table
+        if(position + 5 > len || !text.substring(position, position+5).equalsIgnoreCase("table")) throwError();
+
         position+=5;
         checkWhiteSpace(position, len, text);
         position++;
-        StringBuilder tableName = new StringBuilder();
-        while(text.charAt(position) != ' ') {
-            tableName.append(text.charAt(position));
-            position++;
-        }
+
+        //fetch table name
+        String tableName = readWord(text);
         checkWhiteSpace(position, len, text);
         position++;
-        if(text.charAt(position) != '(') throwError();
+
+        if(position >= len || text.charAt(position) != '(') throwError();
         position++;
+
+        //start extracting columns
         List<String> columns = new ArrayList<>();
         while(position != len && text.charAt(position) != ')') {
-            StringBuilder columnName = new StringBuilder();
-            while(Character.isAlphabetic(text.charAt(position))) {
-                columnName.append(text.charAt(position));
-                position++;
-            }
+            String columnName = readWord(text);
             columns.add(columnName.toString());
-            checkComma(text, position);
-            System.out.println(position);
+            if(!checkComma(text.charAt(position))) throwError();
             position++;
         }
-        System.out.println(tableName.toString());
-        if(storage.hashMap.containsKey(tableName.toString())) {
-            throwTableExistsError(table);
+
+        //store it in database
+        if(Storage.hashMap.containsKey(tableName)) {
+            throwTableExistsError(tableName);
         }
-        storage.hashMap.put(table, new Table(table, columns));
-        succesfullyCreatedTable(tableName.toString(), columns.size());
+        Storage.hashMap.put(tableName, new Table(tableName, columns));
+        succesfullyCreatedTable(tableName, columns.size());
+        for(Map.Entry<String, Table> front : Storage.hashMap.entrySet()) {
+            System.out.println(front.getKey() + " " + front.getValue());
+        }
+    }
+
+
+    private String readWord(String text) {
+        StringBuilder sb = new StringBuilder();
+        while(position < text.length() && Character.isAlphabetic(text.charAt(position))) {
+            sb.append(text.charAt(position));
+            position++;
+        }
+        return sb.toString();
     }
 }

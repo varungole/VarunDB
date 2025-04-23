@@ -1,8 +1,12 @@
 package org.example;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class Utility {
+
+
+    private Utility() {}
 
     public static void checkWhiteSpace(int position, int totalLength, String text) {
         if (position >= totalLength || !Character.isWhitespace(text.charAt(position))) {
@@ -11,32 +15,29 @@ public class Utility {
     }
 
     public static void throwError(){
-        System.out.println("Invalid SQL Syntax");
-        System.exit(1);
+        throw new SqlParseException("Invalid SQL Syntax");
     }
 
     public static void setHash(HashSet<String> hset) {
-        hset.add("select");
-        hset.add("update");
-        hset.add("insert");
-        hset.add("delete");
-        hset.add("create");
+        hset.addAll(SQL_COMMANDS);
     }
+
+    public static final Set<String> SQL_COMMANDS = Set.of(
+            "select", "update", "insert", "delete", "create"
+    );
 
     public static void checkIfTableExists(String tableName) {
         if(!Storage.hashMap.containsKey(tableName)) {
             System.out.println("Table does not exist");
-            System.exit(1);
         }
     }
 
-    public static void checkComma(String text, int position) {
-        if(text.charAt(position) != ',' && text.charAt(position) != ')') throwError();
+    public static boolean checkComma(char c) {
+        return c == ',' || c == ')';
     }
 
     public static void throwTableExistsError(String tableName) {
-        System.out.println("Table " + tableName + " already exists!!");
-        System.exit(1);
+        throw new SqlParseException("Table " + tableName + " already exists!!");
     }
 
     public static void succesfullyCreatedTable(String tableName, int length) {
