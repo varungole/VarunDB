@@ -34,6 +34,7 @@ public class Parser {
             case "create" -> parseRule.parseCreate();
             case "alter" -> parseRule.parseAlter();
             case "drop" -> parseRule.parseDrop();
+            case "truncate" -> parseRule.parseTruncate();
             default -> throwError();
         }
     }

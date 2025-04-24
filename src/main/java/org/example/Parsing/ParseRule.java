@@ -112,4 +112,10 @@ public class ParseRule {
         Storage.hashMap.remove(tableName);
         System.out.println("Dropped the table");
     }
+
+    public void parseTruncate() {
+        String tableName = parseUtil.readWord(ctx);
+        Storage.hashMap.get(tableName).rows = new ArrayList<>();
+        System.out.println("Truncate the table");
+    }
 }

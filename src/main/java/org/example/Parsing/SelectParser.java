@@ -29,8 +29,12 @@ public class SelectParser {
         String tableName = parseUtil.checkTable(ctx);
 
         Table table = Storage.hashMap.get(tableName);
-        for(List<String> row : table.rows) {
-            System.out.println(row);
+        if(table.rows.isEmpty()) {
+            System.out.println("Table " + tableName + " is empty");
+        } else {
+            for (List<String> row : table.rows) {
+                System.out.println(row);
+            }
         }
     }
 
@@ -56,13 +60,17 @@ public class SelectParser {
                             }
                             return index;
                         }).toArray();
-        
-        for(List<String> row : table.rows) {
-            List<String> answer = new ArrayList<>();
-            for(int i : indexes) {
-                answer.add(row.get(i));
+
+        if(table.rows.isEmpty()) {
+                System.out.println("Table " + tableName + " is empty");
+        } else {
+            for (List<String> row : table.rows) {
+                List<String> answer = new ArrayList<>();
+                for (int i : indexes) {
+                    answer.add(row.get(i));
+                }
+                System.out.println(answer);
             }
-            System.out.println(answer);
         }
     }
 }
