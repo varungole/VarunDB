@@ -115,4 +115,75 @@ public class CreateQueryTest {
         Parser parser = new Parser(sqlQuery);
         assertThrows(RuntimeException.class, parser::parse, "Expected parse() to throw syntax error");
     }
+
+    @Test
+    void createTableOneColumn() {
+        String sqlQuery = "create table singlecol (id)";
+        Parser parser = new Parser(sqlQuery);
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        parser.parse();
+        String output = outContent.toString().trim();
+        assertEquals("Inserted 1 columns into table singlecol", output);
+    }
+    
+    @Test
+    void createTableWithExtraSpaces() {
+        String sqlQuery = "  create   table   spaced_table   (  id  ,  age , name )  ";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse, "Expected parse() to throw syntax error");
+    }
+
+    @Test
+    void createTableWithUppercase() {
+        String sqlQuery = "CREATE TABLE CITY (ID,AGE,NAME)";
+        Parser parser = new Parser(sqlQuery);
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        parser.parse();
+        String output = outContent.toString().trim();
+        assertEquals("Inserted 3 columns into table CITY", output);
+    }
+    
+    @Test
+    void createTableEmptyColumns() {
+        String sqlQuery = "create table empty ()";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void createTableTrailingComma() {
+        String sqlQuery = "create table comma_fail (id, age,)";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void createTableUnclosedParenthesis() {
+        String sqlQuery = "create table unclosed (id, age, name";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void createTableDoubleComma() {
+        String sqlQuery = "create table broken (id,,age,name)";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void createTableMissingKeyword() {
+        String sqlQuery = "create employee (id, age, name)";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void createTableWithInvalidColumnNames() {
+        String sqlQuery = "create table test ($id, name, age)";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
 }

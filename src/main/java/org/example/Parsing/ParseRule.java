@@ -82,6 +82,7 @@ public class ParseRule {
         parseUtil.checkOpeningBracket(ctx);
         List<String> columns = new ArrayList<>();
         parseUtil.extractDataInsideBrackets(ctx,columns);
+        if(columns.size() == 0) throwError();
         if(Storage.hashMap.containsKey(tableName)) throwTableExistsError(tableName);
         Storage.hashMap.put(tableName, new Table(tableName, columns, new ArrayList<>()));
         succesfullyCreatedTable(tableName, columns.size());
