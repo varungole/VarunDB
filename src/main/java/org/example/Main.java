@@ -9,7 +9,6 @@ public class Main {
 
         while(flag) {
             System.out.println("Please insert your query");
-            sc.next();
             String sqlQuery = sc.nextLine();
             if(Utility.blankQuery(sqlQuery)) continue;
             try {
