@@ -22,7 +22,9 @@ public class ParseRule {
         String tableName = text.substring(position);
         checkIfTableExists(tableName);
         Table table = Storage.hashMap.get(tableName);
-        System.out.println(table.columns);
+        for(List<String> row : table.rows) {
+            System.out.println(row);
+        }
     }
 
     public void parseUpdate(String text) {
@@ -30,13 +32,11 @@ public class ParseRule {
 
     public void parseInsert(String text) {
         int len = text.length();
-        System.out.println(text);
         verifyCorrectness(text, 4, "into", len);
         advance(4, len, text);
         String tableName = readWord(text);
         checkIfTableExists(tableName);
-        advance(tableName.length(), len, text);
-        System.out.println(position);
+        advance(0, len, text);
         verifyCorrectness(text, 6, "values", len);
         advance(6, len, text);
         checkOpeningBracket(text, len);
@@ -44,7 +44,10 @@ public class ParseRule {
         extractDataInsideBrackets(len, text, data);
         if(!verifyIfDataInsertedIsCorrect(data, Storage.hashMap.get(tableName).columns.size())) throwError();
         Storage.hashMap.get(tableName).rows.add(data);
+
     }
+    //create table employee (id,age)
+    //insert into employee values (1,12)
 
     public void parseDelete(String text) {
 
@@ -68,7 +71,7 @@ public class ParseRule {
 
     private String readWord(String text) {
         StringBuilder sb = new StringBuilder();
-        while(position < text.length() && Character.isAlphabetic(text.charAt(position))) {
+        while(position < text.length() && Character.isLetterOrDigit(text.charAt(position))) {
             sb.append(text.charAt(position));
             position++;
         }

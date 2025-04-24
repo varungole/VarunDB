@@ -17,14 +17,6 @@ public class Main {
             } catch (Exception e) {
                 System.out.println("error " + e.getMessage());
             }
-            System.out.println("Do you have more queries?");
-            int answer;
-            while(!sc.hasNextInt()) {
-                System.out.println("Input is not a number");
-                sc.next();
-            }
-            answer = sc.nextInt();
-            if(answer != 1) flag = false;
         }
     }
 }
