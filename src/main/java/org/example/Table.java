@@ -1,31 +1,21 @@
 package org.example;
 
 import java.util.List;
-import java.util.Map;
 
 public class Table {
 
     public String tableName;
     List<String> columns;
-    List<Map<String, String>> rows;
+    List<List<String>> rows;
 
-    public Table(String tableName, List<String> columns) {
+    public Table(String tableName, List<String> columns, List<List<String>> rows) {
         this.tableName = tableName;
         this.columns = columns;
-    }
-
-
-    public boolean convertToString() {
-        for(Map<String, String> row : rows) {
-            System.out.println(row.toString());
-        }
-        return false;
+        this.rows = rows;
     }
 }
 
 /*
-Employee
-name id salary
-ashish 1 10000
-varun 2 15000
+employees --> columns
+ Storage.hashMap.put(tableName, new Table(tableName, columns, rows));
  */

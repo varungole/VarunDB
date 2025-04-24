@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -58,5 +59,9 @@ public class Utility {
             System.out.println("Please enter 1 to continue or 0 to end");
             sc.next();
         }
+    }
+
+    public static boolean verifyIfDataInsertedIsCorrect(List<String> data, int size) {
+        return data.size() == size;
     }
 }

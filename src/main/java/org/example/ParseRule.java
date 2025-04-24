@@ -4,7 +4,6 @@ import static org.example.Utility.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ParseRule {
     public int position;
@@ -14,19 +13,12 @@ public class ParseRule {
     }
 
     public void parseSelect(String text) {
-        if(text.charAt(position) != '*') {
-            throwError();
-        }
-        position++;
-        checkWhiteSpace(position, text.length(), text);
-        position++;
+        int len = text.length();
+        if(text.charAt(position) != '*') throwError();
+        advance(1, len, text);
         String from = text.substring(position, position+4);
-        if(!from.equalsIgnoreCase("from")) {
-            throwError();
-        }
-        position+=4;
-        checkWhiteSpace(position, text.length(), text);
-        position+=1;
+        if(!from.equalsIgnoreCase("from")) throwError();
+        advance(4, len, text);
         String tableName = text.substring(position);
         checkIfTableExists(tableName);
         Table table = Storage.hashMap.get(tableName);
@@ -37,6 +29,21 @@ public class ParseRule {
     }
 
     public void parseInsert(String text) {
+        int len = text.length();
+        System.out.println(text);
+        verifyCorrectness(text, 4, "into", len);
+        advance(4, len, text);
+        String tableName = readWord(text);
+        checkIfTableExists(tableName);
+        advance(tableName.length(), len, text);
+        System.out.println(position);
+        verifyCorrectness(text, 6, "values", len);
+        advance(6, len, text);
+        checkOpeningBracket(text, len);
+        List<String> data = new ArrayList<>();
+        extractDataInsideBrackets(len, text, data);
+        if(!verifyIfDataInsertedIsCorrect(data, Storage.hashMap.get(tableName).columns.size())) throwError();
+        Storage.hashMap.get(tableName).rows.add(data);
     }
 
     public void parseDelete(String text) {
@@ -45,39 +52,19 @@ public class ParseRule {
 
     public void parseCreate(String text) {
         int len = text.length();
-
-        //expect the word table
-        if(position + 5 > len || !text.substring(position, position+5).equalsIgnoreCase("table")) throwError();
-
-        position+=5;
-        checkWhiteSpace(position, len, text);
-        position++;
-
-        //fetch table name
+        verifyCorrectness(text, 5, "table", len);
+        advance(5, len, text);
         String tableName = readWord(text);
-        checkWhiteSpace(position, len, text);
-        position++;
-
-        if(position >= len || text.charAt(position) != '(') throwError();
-        position++;
-
-        //start extracting columns
+        advance(0, len, text);
+        checkOpeningBracket(text,len);
         List<String> columns = new ArrayList<>();
-        while(position != len && text.charAt(position) != ')') {
-            String columnName = readWord(text);
-            columns.add(columnName.toString());
-            if(!checkComma(text.charAt(position))) throwError();
-            position++;
-        }
-
-        //store it in database
+        extractDataInsideBrackets(len, text, columns);
         if(Storage.hashMap.containsKey(tableName)) {
             throwTableExistsError(tableName);
         }
-        Storage.hashMap.put(tableName, new Table(tableName, columns));
+        Storage.hashMap.put(tableName, new Table(tableName, columns, new ArrayList<>()));
         succesfullyCreatedTable(tableName, columns.size());
     }
-
 
     private String readWord(String text) {
         StringBuilder sb = new StringBuilder();
@@ -87,4 +74,29 @@ public class ParseRule {
         }
         return sb.toString();
     }
+
+    private void advance(int spaces, int len, String text) {
+        position +=spaces;
+        checkWhiteSpace(position, len, text);
+        position++;
+    }
+
+    private void verifyCorrectness(String text, int spaces, String compareWith, int len) {
+        if(position + spaces > len || !text.substring(position, position+spaces).equalsIgnoreCase(compareWith)) throwError();
+    }
+
+    private void checkOpeningBracket(String text, int len) {
+        if(position >= len || text.charAt(position) != '(') throwError();
+        position++;
+    }
+
+    private void extractDataInsideBrackets(int len, String text, List<String> list) {
+        while(position != len && text.charAt(position) != ')') {
+            String dataField = readWord(text);
+            list.add(dataField);
+            if(!checkComma(text.charAt(position))) throwError();
+            position++;
+        }
+    }
+
 }
