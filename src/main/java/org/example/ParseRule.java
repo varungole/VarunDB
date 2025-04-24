@@ -21,8 +21,8 @@ public class ParseRule {
 
     public void parseSelect() {
         if(text.charAt(position) != '*') throwError();
-        advanceAndCheckWhitespace(1, len, text);
-        verifyAndAdvance(4, len, text, "from");
+        advanceAndCheckWhitespace(1);
+        verifyAndAdvance(4, "from");
         String tableName = checkTable();
 
         Table table = Storage.hashMap.get(tableName);
@@ -35,39 +35,33 @@ public class ParseRule {
     }
 
     public void parseInsert() {
-
-        verifyAndAdvance(4, len, text, "into");
-
+        verifyAndAdvance(4, "into");
         String tableName = checkTable();
-
-        advanceAndCheckWhitespace(0, len, text);
-
-        verifyAndAdvance(6, len, text, "values");
-
-        checkOpeningBracket(text, len);
+        advanceAndCheckWhitespace(0);
+        verifyAndAdvance(6, "values");
+        checkOpeningBracket();
         List<String> data = new ArrayList<>();
-        extractDataInsideBrackets(len, text, data);
+        extractDataInsideBrackets(data);
         if(!verifyIfDataInsertedIsCorrect(data, Storage.hashMap.get(tableName).columns.size())) throwError();
         Storage.hashMap.get(tableName).rows.add(data);
-
+        System.out.println("Inserted succesfully!");
     }
-    //create table employee (id,age)
-    //insert into employee values (1,12)
 
     public void parseDelete() {
-
+        String tableName = checkTable();
+        Storage.hashMap.remove(tableName);
+        System.out.println("Table successfully deleted!");
     }
 
+
     public void parseCreate() {
-        verifyAndAdvance(5, len, text, "table");
+        verifyAndAdvance(5, "table");
         String tableName = readWord();
-        advanceAndCheckWhitespace(0, len, text);
-        checkOpeningBracket(text,len);
+        advanceAndCheckWhitespace(0);
+        checkOpeningBracket();
         List<String> columns = new ArrayList<>();
-        extractDataInsideBrackets(len, text, columns);
-        if(Storage.hashMap.containsKey(tableName)) {
-            throwTableExistsError(tableName);
-        }
+        extractDataInsideBrackets(columns);
+        if(Storage.hashMap.containsKey(tableName)) throwTableExistsError(tableName);
         Storage.hashMap.put(tableName, new Table(tableName, columns, new ArrayList<>()));
         succesfullyCreatedTable(tableName, columns.size());
     }
@@ -81,18 +75,18 @@ public class ParseRule {
         return sb.toString();
     }
 
-    private void advanceAndCheckWhitespace(int spaces, int len, String text) {
+    private void advanceAndCheckWhitespace(int spaces) {
         position +=spaces;
         checkWhiteSpace(position, len, text);
         position++;
     }
 
-    private void checkOpeningBracket(String text, int len) {
+    private void checkOpeningBracket() {
         if(position >= len || text.charAt(position) != '(') throwError();
         position++;
     }
 
-    private void extractDataInsideBrackets(int len, String text, List<String> list) {
+    private void extractDataInsideBrackets(List<String> list) {
         while(position < len && text.charAt(position) != ')') {
             String dataField = readWord();
             if(dataField.isEmpty()) throwError();
@@ -102,7 +96,7 @@ public class ParseRule {
         }
     }
 
-    private void verifyAndAdvance(int spaces, int len, String text, String compareWith) {
+    private void verifyAndAdvance(int spaces, String compareWith) {
         if(position + spaces > len || !text.substring(position, position+spaces).equalsIgnoreCase(compareWith)) throwError();
         position +=spaces;
         checkWhiteSpace(position, len, text);
