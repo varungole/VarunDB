@@ -12,6 +12,7 @@ public class Main {
 
         while(flag) {
             System.out.println("Please insert your query");
+            if (!sc.hasNextLine()) break; // exit cleanly on EOF
             String sqlQuery = sc.nextLine();
             if(Utility.blankQuery(sqlQuery)) continue;
             try {

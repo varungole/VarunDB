@@ -15,7 +15,6 @@ public class Utility {
 
     public static void checkWhiteSpace(int position, int totalLength, String text) {
         if (position >= totalLength || !Character.isWhitespace(text.charAt(position))) {
-            System.out.println("Throwing error here");
             throwError();
         }
     }
@@ -56,13 +55,6 @@ public class Utility {
             return true;
         }
         return false;
-    }
-
-    public static void invalidInput(Scanner sc) {
-        while(!sc.hasNextInt()) {
-            System.out.println("Please enter 1 to continue or 0 to end");
-            sc.next();
-        }
     }
 
     public static boolean verifyIfDataInsertedIsCorrect(List<String> data, int size) {

@@ -69,11 +69,9 @@ public class ParseRule {
     }
 
     public void parseDelete() {
-        String tableName = parseUtil.checkTable(ctx);
-        Storage.hashMap.remove(tableName);
-        System.out.println("Table successfully deleted!");
+        DeleteParser deleteParser = new DeleteParser(ctx, parseUtil);
+        deleteParser.parseDelete();
     }
-
 
     public void parseCreate() {
         parseUtil.verifyAndAdvance(ctx,5, "table");
