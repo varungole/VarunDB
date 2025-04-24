@@ -18,7 +18,6 @@ public class Parser {
     public Parser(String text) {
         this.text = text;
         position = 0;
-        text.charAt(position);
         totalLength = text.length();
         hset = new HashSet<>();
         parseRule = new ParseRule();
@@ -27,35 +26,30 @@ public class Parser {
     public void ruleSwitchCase(String rule, String subText) {
         parseRule.setText(subText);
         switch (rule) {
-            case "select" -> parseRule.parseSelect();
-            case "update" -> parseRule.parseUpdate();
-            case "insert" -> parseRule.parseInsert();
-            case "delete" -> parseRule.parseDelete();
-            case "create" -> parseRule.parseCreate();
-            case "alter" -> parseRule.parseAlter();
-            case "drop" -> parseRule.parseDrop();
-            case "truncate" -> parseRule.parseTruncate();
-            case "describe" -> parseRule.parseDescribe();
+            case "select"   ->   parseRule.parseSelect();
+            case "update"   ->   parseRule.parseUpdate();
+            case "insert"   ->   parseRule.parseInsert();
+            case "delete"   ->   parseRule.parseDelete();
+            case "create"   ->   parseRule.parseCreate();
+            case "alter"    ->   parseRule.parseAlter();
+            case "drop"     ->   parseRule.parseDrop();
+            case "truncate" ->   parseRule.parseTruncate();
+            case "describe" ->   parseRule.parseDescribe();
             default -> throwError();
         }
     }
 
     public void checkFirst(String first) {
-        if(!hset.contains(first.toLowerCase())) {
-           throwError();
-        }
+        if(!hset.contains(first.toLowerCase())) throwError();
         position+=first.length();
         checkWhiteSpace(position, totalLength, text);
         position++;
         ruleSwitchCase(first.toLowerCase(), text.substring(position));
     }
 
-
     public void parse() {
       Utility.setHash(hset);
-      int spaceIndex = text.indexOf(' ');
-      if(spaceIndex == -1) throwError();
-      String command = text.substring(0, spaceIndex);
+      String command = text.substring(0, text.indexOf(' '));
       checkFirst(command);
     }
 }

@@ -8,11 +8,10 @@ import org.example.Util.Utility;
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        boolean flag = true;
 
-        while(flag) {
+        while(true) {
             System.out.println("Please insert your query");
-            if (!sc.hasNextLine()) break; // exit cleanly on EOF
+            if (!sc.hasNextLine()) break;
             String sqlQuery = sc.nextLine();
             if(Utility.blankQuery(sqlQuery)) continue;
             try {
