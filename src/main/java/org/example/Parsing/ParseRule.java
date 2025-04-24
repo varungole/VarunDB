@@ -118,4 +118,11 @@ public class ParseRule {
         Storage.hashMap.get(tableName).rows = new ArrayList<>();
         System.out.println("Truncate the table");
     }
+
+    public void parseDescribe() {
+        System.out.println("here");
+        String tableName = parseUtil.readWord(ctx);
+        System.out.println(Storage.hashMap.get(tableName).columns);
+        System.out.println("Describe the table!");
+    }
 }

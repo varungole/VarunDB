@@ -28,7 +28,7 @@ public class Utility {
     }
 
     public static final Set<String> SQL_COMMANDS = Set.of(
-            "select", "update", "insert", "delete", "create", "alter", "drop", "truncate"
+            "select", "update", "insert", "delete", "create", "alter", "drop", "truncate", "describe"
     );
 
     public static void checkIfTableExists(String tableName) {
