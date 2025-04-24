@@ -9,7 +9,6 @@ public class Parser {
 
     private int position;
     private final String text;
-    private char currentChar = '\0';
     private final int totalLength;
     private final HashSet<String> hset;
     private final ParseRule parseRule;
@@ -17,7 +16,7 @@ public class Parser {
     public Parser(String text) {
         this.text = text;
         position = 0;
-        currentChar = text.charAt(position);
+        text.charAt(position);
         totalLength = text.length();
         hset = new HashSet<>();
         parseRule = new ParseRule();

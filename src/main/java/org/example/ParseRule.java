@@ -17,10 +17,14 @@ public class ParseRule {
     public void setText(String subText) {
         this.text = subText;
         this.len = subText.length();
-    }
-
-    public void parseSelect() {
-        if(text.charAt(position) != '*') throwError();
+    }    
+    
+    /*
+     * select * from employees
+     *  select id,name,age from employees
+     */
+    
+    public void parseSelectAll() {
         advanceAndCheckWhitespace(1);
         verifyAndAdvance(4, "from");
         String tableName = checkTable();
@@ -28,6 +32,41 @@ public class ParseRule {
         Table table = Storage.hashMap.get(tableName);
         for(List<String> row : table.rows) {
             System.out.println(row);
+        }
+    }
+
+    public void parseSelect() {
+        if(text.charAt(position) == '*') {
+            parseSelectAll();
+            return;
+        }
+        List<String> fields = new ArrayList<>();
+        int blankPos = text.indexOf(' ');
+        while(position < blankPos) {
+            String word = readWord();
+            fields.add(word);
+            position++;
+        }
+        advanceAndCheckWhitespace(-1);
+        verifyAndAdvance(4, "from");
+        String tableName = checkTable();
+        Table table = Storage.hashMap.get(tableName);
+        //fields
+        int[] indexes = fields.stream()
+                        .mapToInt(field -> {
+                            int index = table.columns.indexOf(field);
+                            if(index == -1) {
+                                throwError();
+                            }
+                            return index;
+                        }).toArray();
+        
+        for(List<String> row : table.rows) {
+            List<String> answer = new ArrayList<>();
+            for(int i : indexes) {
+                answer.add(row.get(i));
+            }
+            System.out.println(answer);
         }
     }
 

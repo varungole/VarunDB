@@ -12,6 +12,7 @@ public class Utility {
 
     public static void checkWhiteSpace(int position, int totalLength, String text) {
         if (position >= totalLength || !Character.isWhitespace(text.charAt(position))) {
+            System.out.println("Throwing error here");
             throwError();
         }
     }
