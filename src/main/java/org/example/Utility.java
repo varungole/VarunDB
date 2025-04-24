@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 public class Utility {
@@ -28,7 +29,7 @@ public class Utility {
 
     public static void checkIfTableExists(String tableName) {
         if(!Storage.hashMap.containsKey(tableName)) {
-            System.out.println("Table does not exist");
+            throw new SqlParseException("Table " + tableName + " does not exist!");
         }
     }
 
@@ -42,5 +43,20 @@ public class Utility {
 
     public static void succesfullyCreatedTable(String tableName, int length) {
         System.out.println("Inserted " + length + " columns into table " + tableName);
+    }
+
+    public static boolean blankQuery(String sqlQuery) {
+        if(sqlQuery.isBlank()) {
+            System.out.println("Empty query, please try again.");
+            return true;
+        }
+        return false;
+    }
+
+    public static void invalidInput(Scanner sc) {
+        while(!sc.hasNextInt()) {
+            System.out.println("Please enter 1 to continue or 0 to end");
+            sc.next();
+        }
     }
 }

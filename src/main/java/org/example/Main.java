@@ -9,22 +9,22 @@ public class Main {
 
         while(flag) {
             System.out.println("Please insert your query");
+            sc.next();
             String sqlQuery = sc.nextLine();
-            if(sqlQuery.isBlank()) {
-                System.out.println("Empty query, please try again.");
-                continue;
-            }
+            if(Utility.blankQuery(sqlQuery)) continue;
             try {
-                Tokenizer tokenizer = new Tokenizer(sqlQuery);
-                String tokenized = tokenizer.start(sqlQuery);
                 Parser parser = new Parser(sqlQuery);
                 parser.parse();
             } catch (Exception e) {
                 System.out.println("error " + e.getMessage());
             }
             System.out.println("Do you have more queries?");
-            int answer = sc.nextInt();
-            sc.nextLine();
+            int answer;
+            while(!sc.hasNextInt()) {
+                System.out.println("Input is not a number");
+                sc.next();
+            }
+            answer = sc.nextInt();
             if(answer != 1) flag = false;
         }
     }

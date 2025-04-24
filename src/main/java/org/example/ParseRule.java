@@ -76,9 +76,6 @@ public class ParseRule {
         }
         Storage.hashMap.put(tableName, new Table(tableName, columns));
         succesfullyCreatedTable(tableName, columns.size());
-        for(Map.Entry<String, Table> front : Storage.hashMap.entrySet()) {
-            System.out.println(front.getKey() + " " + front.getValue());
-        }
     }
 
 
