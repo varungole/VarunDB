@@ -24,12 +24,13 @@ public class Parser {
     }
 
     public void ruleSwitchCase(String rule, String subText) {
+        parseRule.setText(subText);
         switch (rule) {
-            case "select" -> parseRule.parseSelect(subText);
-            case "update" -> parseRule.parseUpdate(subText);
-            case "insert" -> parseRule.parseInsert(subText);
-            case "delete" -> parseRule.parseDelete(subText);
-            case "create" -> parseRule.parseCreate(subText);
+            case "select" -> parseRule.parseSelect();
+            case "update" -> parseRule.parseUpdate();
+            case "insert" -> parseRule.parseInsert();
+            case "delete" -> parseRule.parseDelete();
+            case "create" -> parseRule.parseCreate();
             default -> throwError();
         }
     }
