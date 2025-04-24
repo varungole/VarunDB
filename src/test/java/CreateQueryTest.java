@@ -185,4 +185,18 @@ public class CreateQueryTest {
         Parser parser = new Parser(sqlQuery);
         assertThrows(RuntimeException.class, parser::parse);
     }
+
+    @Test
+    void broken1() {
+        String sqlQuery = "create employee (id";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void broken2() {
+        String sqlQuery = "create ta                    ";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
 }

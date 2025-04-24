@@ -149,4 +149,18 @@ public class SelectQueryTest {
         assertThrows(RuntimeException.class, parser::parse);
     }
 
+    @Test
+    void brokenQueries1() {
+        String sqlQuery = "select";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void brokenQueries2() {
+        String sqlQuery = "select * fr";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
 }
