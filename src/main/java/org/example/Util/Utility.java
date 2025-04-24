@@ -1,9 +1,12 @@
-package org.example;
+package org.example.Util;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+
+import org.example.Parsing.SqlParseException;
+import org.example.Storage.Storage;
 
 public class Utility {
 

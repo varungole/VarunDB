@@ -1,9 +1,11 @@
-package org.example;
+package org.example.Parsing;
+
+import static org.example.Util.Utility.checkWhiteSpace;
+import static org.example.Util.Utility.throwError;
 
 import java.util.HashSet;
 
-import static org.example.Utility.checkWhiteSpace;
-import static org.example.Utility.throwError;
+import org.example.Util.Utility;
 
 public class Parser {
 

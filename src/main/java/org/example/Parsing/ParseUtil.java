@@ -1,9 +1,9 @@
-package org.example;
+package org.example.Parsing;
 
-import static org.example.Utility.checkComma;
-import static org.example.Utility.checkIfTableExists;
-import static org.example.Utility.checkWhiteSpace;
-import static org.example.Utility.throwError;
+import static org.example.Util.Utility.checkComma;
+import static org.example.Util.Utility.checkIfTableExists;
+import static org.example.Util.Utility.checkWhiteSpace;
+import static org.example.Util.Utility.throwError;
 
 import java.util.List;
 

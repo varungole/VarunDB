@@ -1,12 +1,12 @@
-package org.example;
+package org.example.Storage;
 
 import java.util.List;
 
 public class Table {
 
     public String tableName;
-    List<String> columns;
-    List<List<String>> rows;
+    public List<String> columns;
+    public List<List<String>> rows;
 
     public Table(String tableName, List<String> columns, List<List<String>> rows) {
         this.tableName = tableName;

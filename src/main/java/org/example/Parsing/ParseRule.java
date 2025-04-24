@@ -1,9 +1,12 @@
-package org.example;
+package org.example.Parsing;
 
-import static org.example.Utility.*;
+import static org.example.Util.Utility.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.example.Storage.Storage;
+import org.example.Storage.Table;
 
 public class ParseRule {
     private final ParseUtil parseUtil;
@@ -18,7 +21,7 @@ public class ParseRule {
     }    
 
     public void parseSelect() {
-        SelectParser selectParser = new SelectParser(ctx);
+        SelectParser selectParser = new SelectParser(ctx, parseUtil);
         selectParser.parseSelect();
     }
 
