@@ -10,10 +10,11 @@ create table emp (id,age)
 insert into emp values (1,10)
 insert into emp values (2,10)
 insert into emp values (3,10)
-insert into emp values (4,10)
-insert into emp values (5,10)
-insert into emp values (5,20)
-insert into emp values (5,30)
-delete from emp where id=5
+alter table emp add column department,bonus
+insert into emp values (4,10,varun,1)
+insert into emp values (5,10,varun,1)
+insert into emp values (6,10,varun,1)
+select * from emp
+drop emp
 select * from emp
 EOF

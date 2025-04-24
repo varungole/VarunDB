@@ -17,12 +17,6 @@ public class DeleteParser {
         this.parseUtil = parseUtil;
     }
 
-    public void deleteTable() {
-        String tableName = parseUtil.checkTable(ctx);
-        Storage.hashMap.remove(tableName);
-        System.out.println("Table successfully deleted!");
-    }
-
     public void deleteFromTable() {
         parseUtil.verifyAndAdvance(ctx,4, "from");
         String tableName = parseUtil.checkTable(ctx);
@@ -42,10 +36,6 @@ public class DeleteParser {
     }
 
     public void parseDelete() {
-        if(ctx.text.charAt(ctx.position) == 'f') {
-            deleteFromTable();
-        } else {
-            deleteTable();
-        }
+        deleteFromTable();
     }
 }

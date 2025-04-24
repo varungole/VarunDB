@@ -85,4 +85,31 @@ public class ParseRule {
         Storage.hashMap.put(tableName, new Table(tableName, columns, new ArrayList<>()));
         succesfullyCreatedTable(tableName, columns.size());
     }
+
+    public void parseAlter() {
+        //table emp add column department,bonus
+        parseUtil.verifyAndAdvance(ctx,5, "table");
+        String tableName = parseUtil.readWord(ctx);
+        ctx.position++;
+        parseUtil.verifyAndAdvance(ctx,3, "add");
+        parseUtil.verifyAndAdvance(ctx,6, "column");
+        List<String> extraColumns = new ArrayList<>();
+        while(ctx.position < ctx.len) {
+            String word = parseUtil.readWord(ctx);
+            extraColumns.add(word);
+            if (ctx.position < ctx.len) {
+                if (checkComma(ctx.text.charAt(ctx.position))) ctx.position++;
+                else throwError();
+            }
+        }
+        Table table = Storage.hashMap.get(tableName);
+        table.columns.addAll(extraColumns);
+        System.out.println("Altered table!");
+    }
+
+    public void parseDrop() {
+        String tableName = parseUtil.readWord(ctx);
+        Storage.hashMap.remove(tableName);
+        System.out.println("Dropped the table");
+    }
 }

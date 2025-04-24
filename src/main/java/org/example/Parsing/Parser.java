@@ -32,6 +32,8 @@ public class Parser {
             case "insert" -> parseRule.parseInsert();
             case "delete" -> parseRule.parseDelete();
             case "create" -> parseRule.parseCreate();
+            case "alter" -> parseRule.parseAlter();
+            case "drop" -> parseRule.parseDrop();
             default -> throwError();
         }
     }
