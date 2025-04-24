@@ -95,4 +95,58 @@ public class SelectQueryTest {
         Parser parser = new Parser(sqlQuery);
         assertThrows(RuntimeException.class, parser::parse, "Expected parse() to throw syntax error");
     }
+
+    @Test
+    void testSelectMultipleColumns() {
+        String sqlQuery = "select id,name from employees";
+        Parser parser = new Parser(sqlQuery);
+        parser.parse();  // Assuming this prints or stores selected results
+        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+    }
+
+    @Test
+    void testSelectCaseInsensitive() {
+        String sqlQuery = "SELECT name,salary FROM employees";
+        Parser parser = new Parser(sqlQuery);
+        parser.parse();
+        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+    }
+
+    @Test
+    void testMissingFrom() {
+        String sqlQuery = "select id name salary employees";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void testTrailingCommaInColumns() {
+        String sqlQuery = "select id, name, from employees";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+
+    @Test
+    void testEmptySelectList() {
+        String sqlQuery = "select from employees";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+
+    @Test
+    void testSelectNonExistentColumn() {
+        String sqlQuery = "select bonus from employees";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void testSelectWithExtraWhitespace() {
+        String sqlQuery = "select    id   ,   name    from    employees";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
 }
