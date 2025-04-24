@@ -39,6 +39,7 @@ public class SelectParser {
         int blankPos = ctx.text.indexOf(' ');
         while(ctx.position < blankPos) {
             String word = parseUtil.readWord(ctx);
+            if(word.isEmpty()) throwError();
             fields.add(word);
             ctx.position++;
         }

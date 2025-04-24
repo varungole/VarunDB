@@ -50,5 +50,20 @@ public class ParseUtil {
         String tableName = readWord(ctx);
         checkIfTableExists(tableName);
         return tableName;
-    } 
+    }
+
+    public void extractUpdatePairs(ParseContext ctx, List<Pair> columnName) {
+        while(ctx.position < ctx.len) {
+            String key = readWord(ctx);
+            if (key.isEmpty()) throwError();
+            if(ctx.position >= ctx.len || ctx.text.charAt(ctx.position) != '=') throwError();
+            ctx.position++;
+            String value = readWord(ctx);
+            if(value.isEmpty()) throwError();
+            columnName.add(new Pair(key, value));
+            if(ctx.text.charAt(ctx.position) == ' ') break;
+            if(ctx.text.charAt(ctx.position) != ',') throwError();
+            ctx.position++;
+        }
+    }
 }

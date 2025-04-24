@@ -26,8 +26,44 @@ public class ParseRule {
     }
 
     public void parseUpdate() {
+        //UPDATE Customers SET ContactName='Alfred Schmidt', City='Frankfurt' WHERE CustomerID = 1;
+        //create table a (a,b) 
+        //update a set a=1
+        String tableName = parseUtil.checkTable(ctx);
+        parseUtil.advanceAndCheckWhitespace(ctx,0);
+        parseUtil.verifyAndAdvance(ctx, 3, "set");
+        List<Pair> columnName = new ArrayList<>();
+        parseUtil.extractUpdatePairs(ctx, columnName);
+        ctx.position++;
+        parseUtil.verifyAndAdvance(ctx, 5, "where");
+        String subText = ctx.text.substring(ctx.position);
+        String[] queryMain = new String[2];
+        if(subText.contains("=")) {
+            queryMain = ctx.text.substring(ctx.position).split("=");
+        } else throwError();
+        String mainKey = queryMain[0];
+        String mainValue = queryMain[1];
+        Table table = Storage.hashMap.get(tableName);
+        int index = table.columns.indexOf(mainKey);
+    
+        for(List<String> row : table.rows) {
+            if(row.get(index).equals(mainValue)) {
+                for(Pair p : columnName) {
+                    int setIndex = table.columns.indexOf(p.first);
+                    row.set(setIndex, p.second);
+                }
+            }
+        }
+        System.out.println("Updated successfully!");
     }
+/*
+ Storage.hashMap.put(tableName, new Table(tableName, columns, rows));
+ (id,age)
+ [1, 12]
+[2, 12]
 
+age=2 where id=1
+ */
     public void parseInsert() {
         parseUtil.verifyAndAdvance(ctx,4, "into");
         String tableName = parseUtil.checkTable(ctx);

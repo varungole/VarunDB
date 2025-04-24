@@ -2,7 +2,7 @@ package org.example.Parsing;
 
 public class ParseContext {
     public int position;
-    public final String text;
+    public String text;
     public final int len;
 
     public ParseContext(String text) {
