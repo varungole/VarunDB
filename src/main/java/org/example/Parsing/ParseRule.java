@@ -26,9 +26,6 @@ public class ParseRule {
     }
 
     public void parseUpdate() {
-        //UPDATE Customers SET ContactName='Alfred Schmidt', City='Frankfurt' WHERE CustomerID = 1;
-        //create table a (a,b) 
-        //update a set a=1
         String tableName = parseUtil.checkTable(ctx);
         parseUtil.advanceAndCheckWhitespace(ctx,0);
         parseUtil.verifyAndAdvance(ctx, 3, "set");
@@ -54,16 +51,10 @@ public class ParseRule {
                 }
             }
         }
+
         System.out.println("Updated successfully!");
     }
-/*
- Storage.hashMap.put(tableName, new Table(tableName, columns, rows));
- (id,age)
- [1, 12]
-[2, 12]
 
-age=2 where id=1
- */
     public void parseInsert() {
         parseUtil.verifyAndAdvance(ctx,4, "into");
         String tableName = parseUtil.checkTable(ctx);
