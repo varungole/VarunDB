@@ -1,6 +1,7 @@
 import org.example.Parsing.Parser;
 import org.example.Storage.Storage;
 import org.example.Storage.Table;
+import org.example.Util.ColumnType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ public class InsertQueryTest {
 
     @BeforeEach
     void setup() {
-        Table table = new Table("employees", Arrays.asList("id", "name", "salary"), new ArrayList<>());
+        Table table = new Table("employees", Arrays.asList("id", "name", "salary"),Arrays.asList(ColumnType.INTEGER, ColumnType.STRING, ColumnType.INTEGER),new ArrayList<>());
         table.rows.add(Arrays.asList("1", "Varun", "150000"));
         table.rows.add(Arrays.asList("2", "Ashish", "175000"));
         table.rows.add(Arrays.asList("3", "Dmytro", "200000"));

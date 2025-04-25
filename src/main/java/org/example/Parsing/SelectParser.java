@@ -86,7 +86,6 @@ public class SelectParser {
                 for (int i : indexes) {
                     answer.add(row.get(i));
                 }
-                System.out.println(answer);
             }
         } else {
             int index = table.columns.indexOf(key);
@@ -111,6 +110,7 @@ public class SelectParser {
         } else {
             int index = table.columns.indexOf(key);
             if (index == -1) throwError();
+            System.out.println(index);
             List<List<String>> sortedRows = new ArrayList<>(table.rows);
             sortedRows.sort(Comparator.comparing(row -> row.get(index)));
             for (List<String> row : sortedRows) {

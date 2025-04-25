@@ -1,11 +1,12 @@
 package org.example.Parsing;
 
-import static org.example.Util.Utility.checkComma;
-import static org.example.Util.Utility.checkIfTableExists;
-import static org.example.Util.Utility.checkWhiteSpace;
-import static org.example.Util.Utility.throwError;
+import org.example.Storage.Table;
+import org.example.Util.ColumnType;
+import org.example.Util.Utility;
 
 import java.util.List;
+
+import static org.example.Util.Utility.*;
 
 public class ParseUtil {
  
@@ -39,6 +40,21 @@ public class ParseUtil {
         }
     }
 
+    public void extractDataAndDataTypes(ParseContext ctx, List<String> list, List<ColumnType> columnType) {
+        while(ctx.position < ctx.len && ctx.text.charAt(ctx.position) != ')') {
+            String dataField = readWord(ctx);
+            if(dataField.isEmpty()) throwError();
+            list.add(dataField);
+            checkWhiteSpace(ctx.position, ctx.len, ctx.text);
+            ctx.position++;
+            String dataType = readWord(ctx);
+            ColumnType currColType = ColumnType.fromString(dataType);
+            columnType.add(currColType);
+            if(!checkComma(ctx.text.charAt(ctx.position))) throwError();
+            ctx.position++;
+        }
+    }
+
     public void verifyAndAdvance(ParseContext ctx, int spaces, String compareWith) {
         if(ctx.position + spaces > ctx.len || !ctx.text.substring(ctx.position, ctx.position+spaces).equalsIgnoreCase(compareWith)) throwError();
         ctx.position +=spaces;
@@ -64,6 +80,28 @@ public class ParseUtil {
             if(ctx.text.charAt(ctx.position) == ' ') break;
             if(ctx.text.charAt(ctx.position) != ',') throwError();
             ctx.position++;
+        }
+    }
+
+    public void iterate(Table table, int index, String mainValue, List<Pair> columnName) {
+        for(List<String> row : table.rows) {
+            if(row.get(index).equals(mainValue)) {
+                for(Pair p : columnName) {
+                    int setIndex = table.columns.indexOf(p.first);
+                    row.set(setIndex, p.second);
+                }
+            }
+        }
+    }
+
+    public void addExtraColumns(ParseContext ctx, ParseUtil parseUtil, List<String> extraColumns) {
+        while(ctx.position < ctx.len) {
+            String word = parseUtil.readWord(ctx);
+            extraColumns.add(word);
+            if (ctx.position < ctx.len) {
+                if (checkComma(ctx.text.charAt(ctx.position))) ctx.position++;
+                else throwError();
+            }
         }
     }
 }
