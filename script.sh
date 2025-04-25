@@ -13,5 +13,5 @@ insert into emp values (3,10,16000)
 select * from emp order by salary asc
 alter table emp add column description,status
 insert into emp values (3,10,16000,test,works)
-select * from emp
+select salary from emp order by salary
 EOF

@@ -80,12 +80,26 @@ public class SelectParser {
     }
 
     private void printSpecific(Table table, int[] indexes, String key) {
-        for (List<String> row : table.rows) {
-            List<String> answer = new ArrayList<>();
-            for (int i : indexes) {
-                answer.add(row.get(i));
+        if(key.isEmpty()) {
+            for (List<String> row : table.rows) {
+                List<String> answer = new ArrayList<>();
+                for (int i : indexes) {
+                    answer.add(row.get(i));
+                }
+                System.out.println(answer);
             }
-            System.out.println(answer);
+        } else {
+            int index = table.columns.indexOf(key);
+            if (index == -1) throwError();
+            List<List<String>> sortedRows = new ArrayList<>(table.rows);
+            sortedRows.sort(Comparator.comparing(row -> row.get(index)));
+            for (List<String> row : table.rows) {
+                List<String> answer = new ArrayList<>();
+                for (int i : indexes) {
+                    answer.add(row.get(i));
+                }
+                System.out.println(answer);
+            }
         }
     }
 
@@ -96,11 +110,9 @@ public class SelectParser {
             }
         } else {
             int index = table.columns.indexOf(key);
-            if (index == -1) throwError(); // Invalid ORDER BY column
-
+            if (index == -1) throwError();
             List<List<String>> sortedRows = new ArrayList<>(table.rows);
             sortedRows.sort(Comparator.comparing(row -> row.get(index)));
-
             for (List<String> row : sortedRows) {
                 System.out.println(row);
             }
