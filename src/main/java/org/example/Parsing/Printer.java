@@ -23,7 +23,7 @@ public class Printer {
 
             int threshold = whereClause.third;
             String op = whereClause.second;
-
+            System.out.println(op);
             rows = rows.stream().filter(row -> {
                 double cell;
                 try {

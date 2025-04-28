@@ -22,5 +22,5 @@ insert into emp values (12,37,Austin,290000)
 insert into emp values (13,48,Tyler,530000)
 insert into emp values (14,78,Ashish,4000000)
 insert into emp values (15,84,Madhavi,62000)
-select * from emp where salary > 200000 order by age
+select * from emp where salary <= 200000 order by age
 EOF

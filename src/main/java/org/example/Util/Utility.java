@@ -1,6 +1,7 @@
 package org.example.Util;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.example.Parsing.SqlParseException;
 import org.example.Storage.Storage;
@@ -35,6 +36,9 @@ public class Utility {
     public static final Set<Character> OPERATOR = Set.of(
             '>','<','='
     );
+
+    private static final Pattern WHERE_MATCHER =
+            Pattern.compile("^(>=|<=|>|<|=)\\s*(\\d+(?:\\.\\d+)?)$");
 
     public static void checkIfTableExists(String tableName) {
         if(!Storage.hashMap.containsKey(tableName)) {

@@ -2,6 +2,7 @@ package org.example.Parsing;
 
 import org.example.Storage.Table;
 import org.example.Util.ColumnType;
+import org.example.Util.Utility;
 
 import java.util.List;
 
@@ -102,5 +103,15 @@ public class ParseUtil {
                 else throwError();
             }
         }
+    }
+
+    public String readOperator(ParseContext ctx) {
+        StringBuilder sb = new StringBuilder();
+        while(ctx.position < ctx.text.length() && OPERATOR.contains(ctx
+                .text.charAt(ctx.position))) {
+            sb.append(ctx.text.charAt(ctx.position));
+            ctx.position++;
+        }
+        return sb.toString();
     }
 }

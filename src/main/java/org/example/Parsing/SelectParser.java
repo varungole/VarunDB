@@ -6,6 +6,8 @@ import static org.example.Util.Utility.throwError;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.example.Storage.Storage;
 import org.example.Storage.Table;
@@ -15,6 +17,9 @@ public class SelectParser {
 
     private final ParseUtil parseUtil;
     private final ParseContext ctx;
+
+    private static final Pattern WHERE_MATCHER =
+            Pattern.compile("^(>=|<=|>|<|=)\\s*(\\d+(?:\\.\\d+)?)$");
 
     public SelectParser(ParseContext ctx, ParseUtil parseUtil) {
         this.ctx = ctx;
@@ -36,18 +41,14 @@ public class SelectParser {
     private Pair checkWhereClause() {
         ctx.position++;
         parseUtil.verifyAndAdvance(ctx, 5, "where");
-
         String columnName = parseUtil.readWord(ctx);
         checkWhiteSpace(ctx.position, ctx.len, ctx.text);
         ctx.position++;
-        char operator = ctx.text.charAt(ctx.position);
-        if(!Utility.OPERATOR.contains(operator)) throwError();
-        ctx.position++;
+        String operator = parseUtil.readOperator(ctx);
         checkWhiteSpace(ctx.position, ctx.len, ctx.text);
         ctx.position++;
-
         int value = Integer.parseInt(parseUtil.readWord(ctx));
-        return new Pair(columnName, String.valueOf(operator), value);
+        return new Pair(columnName, operator, value);
     }
 
     public void parseSelectAll() {
