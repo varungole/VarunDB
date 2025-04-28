@@ -3,8 +3,6 @@ package org.example.Parsing;
 import org.example.Storage.Storage;
 import org.example.Storage.Table;
 
-import java.util.List;
-
 import static org.example.Util.Utility.throwError;
 
 public class DeleteParser {

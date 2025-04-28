@@ -1,5 +1,6 @@
 package org.example.Parsing;
 
+import static org.example.Util.Utility.checkWhiteSpace;
 import static org.example.Util.Utility.throwError;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import org.example.Storage.Storage;
 import org.example.Storage.Table;
+import org.example.Util.Utility;
 
 public class SelectParser {
 
@@ -28,23 +30,51 @@ public class SelectParser {
         ctx.position++;
         parseUtil.verifyAndAdvance(ctx,5, "order");
         parseUtil.verifyAndAdvance(ctx,2, "by");
-        String key = parseUtil.readWord(ctx);
-        return key;
+        return parseUtil.readWord(ctx);
+    }
+
+    private Pair checkWhereClause() {
+        ctx.position++;
+        parseUtil.verifyAndAdvance(ctx, 5, "where");
+
+        String columnName = parseUtil.readWord(ctx);
+        checkWhiteSpace(ctx.position, ctx.len, ctx.text);
+        ctx.position++;
+        char operator = ctx.text.charAt(ctx.position);
+        if(!Utility.OPERATOR.contains(operator)) throwError();
+        ctx.position++;
+        checkWhiteSpace(ctx.position, ctx.len, ctx.text);
+        ctx.position++;
+
+        int value = Integer.parseInt(parseUtil.readWord(ctx));
+        return new Pair(columnName, String.valueOf(operator), value);
     }
 
     public void parseSelectAll() {
+        //consume *
         parseUtil.advanceAndCheckWhitespace(ctx,1);
         parseUtil.verifyAndAdvance(ctx,4, "from");
+
+        //table lookup
         String tableName = parseUtil.checkTable(ctx);
         Table table = Storage.hashMap.get(tableName);
-        String key = "";
+
+        //no ORDER, no WHERE
+        String orderByKey = "";
+        Pair whereClause = Pair.empty();
         if(ctx.position < ctx.len) {
-           key = checkForOrderBy();
+            whereClause = checkWhereClause();
         }
-        print(table, tableName, new int[0], "all", key);
+        if(ctx.position < ctx.len) {
+           orderByKey = checkForOrderBy();
+        }
+
+        //unified print
+        Printer.print(table, new int[0], orderByKey, whereClause);
     }
 
     public void parseSelectFields() {
+        //collect field names until first space
         List<String> fields = new ArrayList<>();
         int blankPos = ctx.text.indexOf(' ');
         while(ctx.position < blankPos) {
@@ -53,80 +83,30 @@ public class SelectParser {
             fields.add(word);
             ctx.position++;
         }
+
+        //consume from
         parseUtil.advanceAndCheckWhitespace(ctx,-1);
         parseUtil.verifyAndAdvance(ctx,4, "from");
+
+        //table lookup
         String tableName = parseUtil.checkTable(ctx);
         Table table = Storage.hashMap.get(tableName);
+
+
+        //map field names --> indexes
         int[] indexes = new int[fields.size()];
-        String key = "";
-        if(ctx.position < ctx.len) {
-            key = checkForOrderBy();
-        }
         for (int i = 0; i < fields.size(); i++) {
             int index = table.columns.indexOf(fields.get(i));
             if (index == -1) throwError();
             indexes[i] = index;
         }
-        print(table, tableName, indexes, "specific", key);
-    }
 
-    private void print(Table table, String tableName, int[] indexes, String keyword, String key) {
-        if(checkRowsEmpty(table, tableName)) return;
-        switch (keyword) {
-            case "all" -> printAll(table, key);
-            case "specific" -> printSpecific(table, indexes, key);
-            default -> throwError();
+        String orderByKey = "";
+        Pair whereClause = Pair.empty();
+        if(ctx.position < ctx.len) {
+            orderByKey = checkForOrderBy();
         }
+        //seelect those fields
+        Printer.print(table, indexes, orderByKey, whereClause);
     }
-
-    private void printSpecific(Table table, int[] indexes, String key) {
-        if(key.isEmpty()) {
-            for (List<String> row : table.rows) {
-                List<String> answer = new ArrayList<>();
-                for (int i : indexes) {
-                    answer.add(row.get(i));
-                }
-            }
-        } else {
-            int index = table.columns.indexOf(key);
-            if (index == -1) throwError();
-            List<List<String>> sortedRows = new ArrayList<>(table.rows);
-            sortedRows.sort(Comparator.comparing(row -> row.get(index)));
-            for (List<String> row : table.rows) {
-                List<String> answer = new ArrayList<>();
-                for (int i : indexes) {
-                    answer.add(row.get(i));
-                }
-                System.out.println(answer);
-            }
-        }
-    }
-
-    private void printAll(Table table, String key) {
-        if (key.isEmpty()) {
-            for (List<String> row : table.rows) {
-                System.out.println(row);
-            }
-        } else {
-            int index = table.columns.indexOf(key);
-            if (index == -1) throwError();
-            System.out.println(index);
-            List<List<String>> sortedRows = new ArrayList<>(table.rows);
-            sortedRows.sort(Comparator.comparing(row -> row.get(index)));
-            for (List<String> row : sortedRows) {
-                System.out.println(row);
-            }
-        }
-    }
-
-
-    private boolean checkRowsEmpty(Table table, String tableName) {
-        if(table.rows.isEmpty()) {
-            System.out.println("Table " + tableName + " is empty");
-            return true;
-        }
-        return false;
-    }
-
-
 }

@@ -32,6 +32,10 @@ public class Utility {
             "int", "string"
     );
 
+    public static final Set<Character> OPERATOR = Set.of(
+            '>','<','='
+    );
+
     public static void checkIfTableExists(String tableName) {
         if(!Storage.hashMap.containsKey(tableName)) {
             throw new SqlParseException("Table " + tableName + " does not exist!");

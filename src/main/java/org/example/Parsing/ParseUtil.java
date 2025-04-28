@@ -2,7 +2,6 @@ package org.example.Parsing;
 
 import org.example.Storage.Table;
 import org.example.Util.ColumnType;
-import org.example.Util.Utility;
 
 import java.util.List;
 
@@ -76,7 +75,7 @@ public class ParseUtil {
             ctx.position++;
             String value = readWord(ctx);
             if(value.isEmpty()) throwError();
-            columnName.add(new Pair(key, value));
+            columnName.add(new Pair(key, value,0));
             if(ctx.text.charAt(ctx.position) == ' ') break;
             if(ctx.text.charAt(ctx.position) != ',') throwError();
             ctx.position++;

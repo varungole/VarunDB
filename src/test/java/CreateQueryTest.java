@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.example.Parsing.Parser;
 import org.example.Storage.Storage;
