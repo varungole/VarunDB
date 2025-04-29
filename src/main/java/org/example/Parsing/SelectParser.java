@@ -18,8 +18,6 @@ public class SelectParser {
     private final ParseUtil parseUtil;
     private final ParseContext ctx;
 
-    private static final Pattern WHERE_MATCHER =
-            Pattern.compile("^(>=|<=|>|<|=)\\s*(\\d+(?:\\.\\d+)?)$");
 
     public SelectParser(ParseContext ctx, ParseUtil parseUtil) {
         this.ctx = ctx;
@@ -31,8 +29,8 @@ public class SelectParser {
         else parseSelectFields();
     }
 
-    private String checkForOrderBy() {
-        ctx.position++;
+    private String checkForOrderBy(Pair whereClause) {
+        if(!whereClause.isEmpty()) ctx.position++;
         parseUtil.verifyAndAdvance(ctx,5, "order");
         parseUtil.verifyAndAdvance(ctx,2, "by");
         return parseUtil.readWord(ctx);
@@ -40,6 +38,9 @@ public class SelectParser {
 
     private Pair checkWhereClause() {
         ctx.position++;
+        if(ctx.text.charAt(ctx.position) != 'w') {
+            return Pair.empty();
+        }
         parseUtil.verifyAndAdvance(ctx, 5, "where");
         String columnName = parseUtil.readWord(ctx);
         checkWhiteSpace(ctx.position, ctx.len, ctx.text);
@@ -67,7 +68,7 @@ public class SelectParser {
             whereClause = checkWhereClause();
         }
         if(ctx.position < ctx.len) {
-           orderByKey = checkForOrderBy();
+           orderByKey = checkForOrderBy(whereClause);
         }
 
         //unified print
@@ -84,7 +85,6 @@ public class SelectParser {
             fields.add(word);
             ctx.position++;
         }
-
         //consume from
         parseUtil.advanceAndCheckWhitespace(ctx,-1);
         parseUtil.verifyAndAdvance(ctx,4, "from");
@@ -92,8 +92,6 @@ public class SelectParser {
         //table lookup
         String tableName = parseUtil.checkTable(ctx);
         Table table = Storage.hashMap.get(tableName);
-
-
         //map field names --> indexes
         int[] indexes = new int[fields.size()];
         for (int i = 0; i < fields.size(); i++) {
@@ -105,9 +103,11 @@ public class SelectParser {
         String orderByKey = "";
         Pair whereClause = Pair.empty();
         if(ctx.position < ctx.len) {
-            orderByKey = checkForOrderBy();
+            whereClause = checkWhereClause();
         }
-        //seelect those fields
+        if(ctx.position < ctx.len) {
+            orderByKey = checkForOrderBy(whereClause);
+        }
         Printer.print(table, indexes, orderByKey, whereClause);
     }
 }

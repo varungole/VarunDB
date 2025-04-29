@@ -1,8 +1,11 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.example.Parsing.Parser;
 import org.example.Storage.Storage;
@@ -163,5 +166,128 @@ public class SelectQueryTest {
         Parser parser = new Parser(sqlQuery);
         assertThrows(RuntimeException.class, parser::parse);
     }
+
+    @Test
+    void orderBy1() {
+        String sqlQuery = "select * from employees order by salary";
+        Parser parser = new Parser(sqlQuery);
+        parser.parse();  // Assuming this prints or stores selected results
+        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+    }
+
+
+    @Test
+    void orderBy2() {
+        String sqlQuery = "select salary from employees order by salary";
+        Parser parser = new Parser(sqlQuery);
+        parser.parse();  // Assuming this prints or stores selected results
+        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+    }
+
+    @Test
+    void orderBy3() {
+        String sqlQuery = "select nothing from employees order by salary";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void orderBy4() {
+        String sqlQuery = "select nothing from employees order salary";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void orderBy5() {
+        String sqlQuery = "select nothing from employees order by";
+        Parser parser = new Parser(sqlQuery);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void where1() {
+        String sqlQuery = "select * from employees where salary > 200000 order by name";
+        Parser parser = new Parser(sqlQuery);
+        parser.parse();
+        System.out.println(Storage.hashMap.get("employees"));
+
+    }
+
+    @Test
+    void where2() {
+        List<String> out = runAndCapture(
+                "select * from employees where salary > 200000"
+        );
+        System.out.println(out);
+        assertEquals(3, out.size());
+
+    }
+
+    @Test
+    void orderByUnknownColumn() {
+        String sql = "select * from employees order by height";
+        Parser parser = new Parser(sql);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void whereUnknownColumn() {
+        String sql = "select * from employees where height > 30";
+        Parser parser = new Parser(sql);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void whereUnsupportedOperator() {
+        String sql = "select * from employees where age <> 30";
+        Parser parser = new Parser(sql);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void selectSpecificFieldsOrderByName() {
+        String sql = "select name,salary from employees order by name";
+        List<String> out = runAndCapture(sql);
+        assertEquals(5, out.size());
+    }
+
+    @Test
+    void selectSpecificFieldsWhereAndOrder() {
+        String sql = "select name,salary from employees where salary > 200000 order by name";
+        List<String> out = runAndCapture(sql);
+        assertEquals(3, out.size());
+    }
+
+    @Test
+    void missingFromKeywordThrows() {
+        String sql = "select * employees order by salary";
+        Parser parser = new Parser(sql);
+        assertThrows(RuntimeException.class, parser::parse);
+    }
+
+    @Test
+    void mixedCaseKeywords() {
+        String sql = "SeLeCt * FrOm employees OrDeR bY salary";
+        Parser parser = new Parser(sql);
+        parser.parse();
+        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+    }
+
+    private List<String> runAndCapture(String sql) {
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        PrintStream oldOut = System.out;
+        System.setOut(new PrintStream(buf));
+        try {
+            new Parser(sql).parse();
+        } finally {
+            System.setOut(oldOut);
+        }
+        return buf.toString().lines()
+                .map(String::trim)
+                .filter(l -> !l.isEmpty())
+                .toList();
+    }
+
 
 }
