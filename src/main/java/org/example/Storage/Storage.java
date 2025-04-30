@@ -1,13 +1,15 @@
 package org.example.Storage;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Storage {
-
-    public static HashMap<String, Table> tables = new HashMap<>();
-    public static HashMap<String, List<Table>> databases = new HashMap<>();
+    public static HashMap<String, HashMap<String, Table>> databases = new HashMap<>();
     public static String currentDatabase = "";
+
+    public static HashMap<String, Table> getCurrentTables() {
+        return databases.get(currentDatabase);
+    }
+
     private Storage() {}
 }
 

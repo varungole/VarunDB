@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.example.Parsing.SqlParseException;
 import org.example.Storage.Storage;
+import org.example.Storage.Table;
 
 public class Utility {
 
@@ -49,10 +50,16 @@ public class Utility {
             Pattern.compile("^(>=|<=|>|<|=)\\s*(\\d+(?:\\.\\d+)?)$");
 
     public static void checkIfTableExists(String tableName) {
-        if(!Storage.tables.containsKey(tableName)) {
-            throw new SqlParseException("Table " + tableName + " does not exist!");
+        if (Storage.currentDatabase.isEmpty()) {
+            throw new SqlParseException("No database selected. Use `USE <database>` first.");
+        }
+
+        Map<String, Table> currentTables = Storage.getCurrentTables();
+        if (!currentTables.containsKey(tableName)) {
+            throw new SqlParseException("Table " + tableName + " does not exist in database " + Storage.currentDatabase + "!");
         }
     }
+
 
     public static boolean checkComma(char c) {
         return c == ',' || c == ')';

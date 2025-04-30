@@ -1,10 +1,13 @@
 package org.example.Parsing;
 
+import static org.example.Storage.Storage.currentDatabase;
+import static org.example.Storage.Storage.databases;
 import static org.example.Util.Utility.checkWhiteSpace;
 import static org.example.Util.Utility.throwError;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.example.Storage.Storage;
 import org.example.Storage.Table;
@@ -49,13 +52,13 @@ public class SelectParser {
     }
 
     public void parseSelectAll() {
-        //consume *
         parseUtil.advanceAndCheckWhitespace(ctx,1);
         parseUtil.verifyAndAdvance(ctx,4, "from");
 
         //table lookup
         String tableName = parseUtil.checkTable(ctx);
-        Table table = Storage.tables.get(tableName);
+        Map<String, Table> currentTables = Storage.getCurrentTables();
+        Table table = currentTables.get(tableName);
 
         //no ORDER, no WHERE
         String orderByKey = "";
@@ -87,7 +90,8 @@ public class SelectParser {
 
         //table lookup
         String tableName = parseUtil.checkTable(ctx);
-        Table table = Storage.tables.get(tableName);
+        Map<String, Table> currentTables = Storage.getCurrentTables();
+        Table table = currentTables.get(tableName);
         //map field names --> indexes
         int[] indexes = new int[fields.size()];
         for (int i = 0; i < fields.size(); i++) {

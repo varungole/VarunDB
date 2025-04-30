@@ -5,6 +5,7 @@ import static org.example.Util.Utility.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.example.Storage.Storage;
 import org.example.Storage.Table;
@@ -20,7 +21,7 @@ public class ParseRule {
 
     public void setText(String subText) {
         this.ctx = new ParseContext(subText);
-    }    
+    }
 
     public void parseSelect() {
         SelectParser selectParser = new SelectParser(ctx, parseUtil);
@@ -42,7 +43,7 @@ public class ParseRule {
         } else throwError();
         String mainKey = queryMain[0];
         String mainValue = queryMain[1];
-        Table table = tables.get(tableName);
+        Table table = Storage.getCurrentTables().get(tableName);
         int index = table.columns.indexOf(mainKey);
         parseUtil.iterate(table,index,mainValue,columnName);
         System.out.println("Updated successfully!");
@@ -56,11 +57,12 @@ public class ParseRule {
         parseUtil.checkOpeningBracket(ctx);
         List<String> data = new ArrayList<>();
         parseUtil.extractDataInsideBrackets(ctx,data);
-        int columnSize = tables.get(tableName).columns.size();
-        List<ColumnType> columnTypes = tables.get(tableName).columnType;
+        Table table = Storage.getCurrentTables().get(tableName);
+        int columnSize = table.columns.size();
+        List<ColumnType> columnTypes = table.columnType;
         if(!verifyIfDataInsertedIsCorrect(data,columnSize,columnTypes)) throwError();
-        tables.get(tableName).rows.add(data);
-        System.out.println("Inserted succesfully!");
+        table.rows.add(data);
+        System.out.println("Inserted successfully!");
     }
 
     public void parseDelete() {
@@ -83,30 +85,31 @@ public class ParseRule {
         parseUtil.verifyAndAdvance(ctx,6, "column");
         List<String> extraColumns = new ArrayList<>();
         parseUtil.addExtraColumns(ctx,parseUtil,extraColumns);
-        Table table = tables.get(tableName);
+        Table table = Storage.getCurrentTables().get(tableName);
         table.columns.addAll(extraColumns);
         System.out.println("Altered table!");
     }
 
     public void parseDrop() {
         String tableName = parseUtil.readWord(ctx);
-        tables.remove(tableName);
+        Storage.getCurrentTables().remove(tableName);
         System.out.println("Dropped the table");
     }
 
     public void parseTruncate() {
         String tableName = parseUtil.readWord(ctx);
-        tables.get(tableName).rows = new ArrayList<>();
+        Storage.getCurrentTables().get(tableName).rows = new ArrayList<>();
+        System.out.println("Truncated the table");
     }
 
     public void parseDescribe() {
         String tableName = parseUtil.readWord(ctx);
-        System.out.println(tables.get(tableName).columns);
+        System.out.println(Storage.getCurrentTables().get(tableName).columns);
     }
 
     public void parseUse() {
         String databaseName = parseUtil.readWord(ctx);
-        if(!databases.containsKey(databaseName)) databaseDoesntExist();
+        if (!databases.containsKey(databaseName)) databaseDoesntExist();
         currentDatabase = databaseName;
         System.out.println("Using " + currentDatabase);
     }

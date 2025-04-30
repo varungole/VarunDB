@@ -27,7 +27,7 @@ public class DeleteParser {
         } else throwError();
         String mainKey = queryMain[0];
         String mainValue = queryMain[1];
-        Table table = Storage.tables.get(tableName);
+        Table table = Storage.getCurrentTables().get(tableName);
         int index = table.columns.indexOf(mainKey);
         table.rows.removeIf(row -> row.get(index).equals(mainValue));
         System.out.println("Removed the row sucessfully!");
