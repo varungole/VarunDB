@@ -23,8 +23,8 @@ public class CreateQueryTest {
         table.rows.add(Arrays.asList("3", "Dmytro", "200000"));
         table.rows.add(Arrays.asList("4", "Pavel", "350000"));
         table.rows.add(Arrays.asList("5", "Jeetendra", "250000"));
-        Storage.hashMap.clear();
-        Storage.hashMap.put("employees", table);
+        Storage.tables.clear();
+        Storage.tables.put("employees", table);
     }
 
     @Test

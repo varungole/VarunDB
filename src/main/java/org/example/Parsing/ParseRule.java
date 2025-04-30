@@ -1,5 +1,6 @@
 package org.example.Parsing;
 
+import static org.example.Storage.Storage.*;
 import static org.example.Util.Utility.*;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class ParseRule {
         } else throwError();
         String mainKey = queryMain[0];
         String mainValue = queryMain[1];
-        Table table = Storage.hashMap.get(tableName);
+        Table table = tables.get(tableName);
         int index = table.columns.indexOf(mainKey);
         parseUtil.iterate(table,index,mainValue,columnName);
         System.out.println("Updated successfully!");
@@ -55,10 +56,10 @@ public class ParseRule {
         parseUtil.checkOpeningBracket(ctx);
         List<String> data = new ArrayList<>();
         parseUtil.extractDataInsideBrackets(ctx,data);
-        int columnSize = Storage.hashMap.get(tableName).columns.size();
-        List<ColumnType> columnTypes = Storage.hashMap.get(tableName).columnType;
+        int columnSize = tables.get(tableName).columns.size();
+        List<ColumnType> columnTypes = tables.get(tableName).columnType;
         if(!verifyIfDataInsertedIsCorrect(data,columnSize,columnTypes)) throwError();
-        Storage.hashMap.get(tableName).rows.add(data);
+        tables.get(tableName).rows.add(data);
         System.out.println("Inserted succesfully!");
     }
 
@@ -68,17 +69,10 @@ public class ParseRule {
     }
 
     public void parseCreate() {
-        parseUtil.verifyAndAdvance(ctx,5, "table");
-        String tableName = parseUtil.readWord(ctx);
-        parseUtil.advanceAndCheckWhitespace(ctx,0);
-        parseUtil.checkOpeningBracket(ctx);
-        List<String> columns = new ArrayList<>();
-        List<ColumnType> columnType = new ArrayList<>();
-        parseUtil.extractDataAndDataTypes(ctx,columns,columnType);
-        if(columns.isEmpty()) throwError();
-        if(Storage.hashMap.containsKey(tableName)) throwTableExistsError(tableName);
-        Storage.hashMap.put(tableName, new Table(tableName, columns,columnType,new ArrayList<>()));
-        succesfullyCreatedTable(tableName, columns.size());
+        CreateParser createParser = new CreateParser(ctx, parseUtil);
+        char checkD = Character.toLowerCase(ctx.text.charAt(ctx.position));
+        if(checkD == 'd') createParser.parseCreateDatabase();
+        else createParser.parseCreateTable();
     }
 
     public void parseAlter() {
@@ -89,27 +83,31 @@ public class ParseRule {
         parseUtil.verifyAndAdvance(ctx,6, "column");
         List<String> extraColumns = new ArrayList<>();
         parseUtil.addExtraColumns(ctx,parseUtil,extraColumns);
-        Table table = Storage.hashMap.get(tableName);
+        Table table = tables.get(tableName);
         table.columns.addAll(extraColumns);
         System.out.println("Altered table!");
     }
 
     public void parseDrop() {
         String tableName = parseUtil.readWord(ctx);
-        Storage.hashMap.remove(tableName);
+        tables.remove(tableName);
         System.out.println("Dropped the table");
     }
 
     public void parseTruncate() {
         String tableName = parseUtil.readWord(ctx);
-        Storage.hashMap.get(tableName).rows = new ArrayList<>();
-        System.out.println("Truncate the table");
+        tables.get(tableName).rows = new ArrayList<>();
     }
 
     public void parseDescribe() {
-        System.out.println("here");
         String tableName = parseUtil.readWord(ctx);
-        System.out.println(Storage.hashMap.get(tableName).columns);
-        System.out.println("Describe the table!");
+        System.out.println(tables.get(tableName).columns);
+    }
+
+    public void parseUse() {
+        String databaseName = parseUtil.readWord(ctx);
+        if(!databases.containsKey(databaseName)) databaseDoesntExist();
+        currentDatabase = databaseName;
+        System.out.println("Using " + currentDatabase);
     }
 }

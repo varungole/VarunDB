@@ -21,8 +21,8 @@ public class UpdateQueryTest {
         table.rows.add(Arrays.asList("3", "Dmytro", "200000"));
         table.rows.add(Arrays.asList("4", "Pavel", "350000"));
         table.rows.add(Arrays.asList("5", "Jeetendra", "250000"));
-        Storage.hashMap.clear();
-        Storage.hashMap.put("employees", table);
+        Storage.tables.clear();
+        Storage.tables.put("employees", table);
     }
 
     @Test
@@ -30,7 +30,7 @@ public class UpdateQueryTest {
         String query = "update employees set name=UpdatedName where id=3";
         Parser parser = new Parser(query);
         parser.parse();
-        assertEquals("UpdatedName", Storage.hashMap.get("employees").rows.get(2).get(1));
+        assertEquals("UpdatedName", Storage.tables.get("employees").rows.get(2).get(1));
     }
 
     @Test
@@ -38,8 +38,8 @@ public class UpdateQueryTest {
         String query = "update employees set id=10,salary=500000 where id=2";
         Parser parser = new Parser(query);
         parser.parse();
-        assertEquals("10", Storage.hashMap.get("employees").rows.get(1).get(0));
-        assertEquals("500000", Storage.hashMap.get("employees").rows.get(1).get(2));
+        assertEquals("10", Storage.tables.get("employees").rows.get(1).get(0));
+        assertEquals("500000", Storage.tables.get("employees").rows.get(1).get(2));
     }
 
     @Test
@@ -69,8 +69,8 @@ public class UpdateQueryTest {
         Parser parser = new Parser(query);
         parser.parse();
         // All rows should remain unchanged
-        assertEquals("150000", Storage.hashMap.get("employees").rows.get(0).get(2));
-        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+        assertEquals("150000", Storage.tables.get("employees").rows.get(0).get(2));
+        assertEquals(5, Storage.tables.get("employees").rows.size());
     }
 
     @Test

@@ -4,14 +4,10 @@ import static org.example.Util.Utility.checkWhiteSpace;
 import static org.example.Util.Utility.throwError;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.example.Storage.Storage;
 import org.example.Storage.Table;
-import org.example.Util.Utility;
 
 public class SelectParser {
 
@@ -59,7 +55,7 @@ public class SelectParser {
 
         //table lookup
         String tableName = parseUtil.checkTable(ctx);
-        Table table = Storage.hashMap.get(tableName);
+        Table table = Storage.tables.get(tableName);
 
         //no ORDER, no WHERE
         String orderByKey = "";
@@ -91,7 +87,7 @@ public class SelectParser {
 
         //table lookup
         String tableName = parseUtil.checkTable(ctx);
-        Table table = Storage.hashMap.get(tableName);
+        Table table = Storage.tables.get(tableName);
         //map field names --> indexes
         int[] indexes = new int[fields.size()];
         for (int i = 0; i < fields.size(); i++) {

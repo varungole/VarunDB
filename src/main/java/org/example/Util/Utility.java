@@ -21,12 +21,20 @@ public class Utility {
         throw new SqlParseException("Invalid SQL Syntax");
     }
 
+    public static void databaseDoesntExist(){
+        throw new SqlParseException("Database doesnt exist!");
+    }
+
+    public static void databaseNotDefined(){
+        throw new SqlParseException("Which database to work with not defined");
+    }
+
     public static void setHash(HashSet<String> hset) {
         hset.addAll(SQL_COMMANDS);
     }
 
     public static final Set<String> SQL_COMMANDS = Set.of(
-            "select", "update", "insert", "delete", "create", "alter", "drop", "truncate", "describe"
+            "select", "update", "insert", "delete", "create", "alter", "drop", "truncate", "describe", "use"
     );
 
     public static final Set<String> DATA_TYPES = Set.of(
@@ -41,7 +49,7 @@ public class Utility {
             Pattern.compile("^(>=|<=|>|<|=)\\s*(\\d+(?:\\.\\d+)?)$");
 
     public static void checkIfTableExists(String tableName) {
-        if(!Storage.hashMap.containsKey(tableName)) {
+        if(!Storage.tables.containsKey(tableName)) {
             throw new SqlParseException("Table " + tableName + " does not exist!");
         }
     }

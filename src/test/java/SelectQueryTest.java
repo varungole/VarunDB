@@ -24,8 +24,8 @@ public class SelectQueryTest {
         table.rows.add(Arrays.asList("3", "Dmytro", "200000"));
         table.rows.add(Arrays.asList("4", "Pavel", "350000"));
         table.rows.add(Arrays.asList("5", "Jeetendra", "250000"));
-        Storage.hashMap.clear();
-        Storage.hashMap.put("employees", table);
+        Storage.tables.clear();
+        Storage.tables.put("employees", table);
     }
 
     @Test
@@ -33,7 +33,7 @@ public class SelectQueryTest {
         String sqlQuery = "select * from employees";
         Parser parser = new Parser(sqlQuery);
         parser.parse();
-        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+        assertEquals(5, Storage.tables.get("employees").rows.size());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class SelectQueryTest {
         String sqlQuery = "select id from employees";
         Parser parser = new Parser(sqlQuery);
         parser.parse();
-        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+        assertEquals(5, Storage.tables.get("employees").rows.size());
     }
 
     @Test
@@ -105,7 +105,7 @@ public class SelectQueryTest {
         String sqlQuery = "select id,name from employees";
         Parser parser = new Parser(sqlQuery);
         parser.parse();  // Assuming this prints or stores selected results
-        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+        assertEquals(5, Storage.tables.get("employees").rows.size());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class SelectQueryTest {
         String sqlQuery = "SELECT name,salary FROM employees";
         Parser parser = new Parser(sqlQuery);
         parser.parse();
-        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+        assertEquals(5, Storage.tables.get("employees").rows.size());
     }
 
     @Test
@@ -172,7 +172,7 @@ public class SelectQueryTest {
         String sqlQuery = "select * from employees order by salary";
         Parser parser = new Parser(sqlQuery);
         parser.parse();  // Assuming this prints or stores selected results
-        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+        assertEquals(5, Storage.tables.get("employees").rows.size());
     }
 
 
@@ -181,7 +181,7 @@ public class SelectQueryTest {
         String sqlQuery = "select salary from employees order by salary";
         Parser parser = new Parser(sqlQuery);
         parser.parse();  // Assuming this prints or stores selected results
-        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+        assertEquals(5, Storage.tables.get("employees").rows.size());
     }
 
     @Test
@@ -210,7 +210,7 @@ public class SelectQueryTest {
         String sqlQuery = "select * from employees where salary > 200000 order by name";
         Parser parser = new Parser(sqlQuery);
         parser.parse();
-        System.out.println(Storage.hashMap.get("employees"));
+        System.out.println(Storage.tables.get("employees"));
 
     }
 
@@ -271,7 +271,7 @@ public class SelectQueryTest {
         String sql = "SeLeCt * FrOm employees OrDeR bY salary";
         Parser parser = new Parser(sql);
         parser.parse();
-        assertEquals(5, Storage.hashMap.get("employees").rows.size());
+        assertEquals(5, Storage.tables.get("employees").rows.size());
     }
 
     private List<String> runAndCapture(String sql) {
