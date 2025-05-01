@@ -14,7 +14,6 @@ public class Main {
             root.mkdirs();
         }
         while(true) {
-            System.out.println("Please insert your query");
             if (!sc.hasNextLine()) break;
             String sqlQuery = sc.nextLine();
             if(Utility.blankQuery(sqlQuery)) continue;

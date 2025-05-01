@@ -49,23 +49,35 @@ public class ParseRule {
     }
 
     public void parseInsert() {
-        parseUtil.verifyAndAdvance(ctx,4, "into");
+        parseUtil.verifyAndAdvance(ctx, 4, "into");
         String tableName = parseUtil.checkTable(ctx);
-        parseUtil.advanceAndCheckWhitespace(ctx,0);
-        parseUtil.verifyAndAdvance(ctx,6, "values");
-        parseUtil.checkOpeningBracket(ctx);
-        List<String> data = new ArrayList<>();
-        parseUtil.extractDataInsideBrackets(ctx,data);
+        parseUtil.advanceAndCheckWhitespace(ctx, 0);
+        parseUtil.verifyAndAdvance(ctx, 6, "values");
+
         Table table = Storage.getCurrentTables().get(tableName);
         int columnSize = table.columns.size();
         List<ColumnType> columnTypes = table.columnType;
-        if(!verifyIfDataInsertedIsCorrect(data,columnSize,columnTypes)) throwError();
-        table.rows.add(data);
+
+        while (ctx.position < ctx.len) {
+            parseUtil.checkOpeningBracket(ctx);
+            List<String> data = new ArrayList<>();
+            parseUtil.extractDataInsideBrackets(ctx, data); // just one group at a time
+            if (!verifyIfDataInsertedIsCorrect(data, columnSize, columnTypes)) throwError();
+            table.rows.add(data);
+            ctx.position++;
+            if (ctx.position < ctx.len && ctx.text.charAt(ctx.position) == ',') {
+                ctx.position++; // skip comma, and go to next '('
+            } else {
+                break; // no more tuples
+            }
+        }
+
         System.out.println("Inserted successfully!");
         String dbPath = "data/" + currentDatabase + "/";
         String dataPath = dbPath + tableName + ".db";
         writeDB(dataPath, table.rows);
     }
+
 
     public void parseDelete() {
         DeleteParser deleteParser = new DeleteParser(ctx, parseUtil);

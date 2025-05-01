@@ -29,11 +29,10 @@ public class Printer {
             String line;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
-                // Remove [ and ]
+
                 if (line.startsWith("[") && line.endsWith("]")) {
                     line = line.substring(1, line.length() - 1);
                 }
-                // Split by comma
                 String[] values = line.split(",");
                 List<String> row = new ArrayList<>();
                 for (String value : values) {

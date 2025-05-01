@@ -31,12 +31,15 @@ public class ParseUtil {
     }
 
     public void extractDataInsideBrackets(ParseContext ctx, List<String> list) {
-        while(ctx.position < ctx.len && ctx.text.charAt(ctx.position) != ')') {
+        while(true) {
             String dataField = readWord(ctx);
             if(dataField.isEmpty()) throwError();
             list.add(dataField);
-            if(!checkComma(ctx.text.charAt(ctx.position))) throwError();
-            ctx.position++;
+            char nextChar = ctx.text.charAt(ctx.position);
+            if(nextChar == ',') ctx.position++; //continue as we are in same tuple
+            else if (nextChar == ')') { // proceed to next tuple
+                break;
+            } else throwError();
         }
     }
 
