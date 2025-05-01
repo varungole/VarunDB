@@ -9,6 +9,6 @@ java org.example.Main <<EOF
 create database football
 use football
 create table teams (country string,name string,rank int)
-insert into teams values (uk,manutd,13),(uk,liverpool,1),(uk,astonvilla,5)
+insert into teams values (uk,manutd,13),(uk,liverpool,1),(uk,aston villa,5)
 select * from teams
 EOF

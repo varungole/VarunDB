@@ -19,6 +19,15 @@ public class ParseUtil {
         return sb.toString();
     }
 
+    public String readWordForInsert(ParseContext ctx) {
+        StringBuilder sb = new StringBuilder();
+        while(ctx.position < ctx.text.length() && Utility.isLetterOrDigitOrBlankSpace(ctx.text.charAt(ctx.position))) {
+            sb.append(ctx.text.charAt(ctx.position));
+            ctx.position++;
+        }
+        return sb.toString().trim();
+    }
+
     public void advanceAndCheckWhitespace(ParseContext ctx, int spaces) {
         ctx.position +=spaces;
         checkWhiteSpace(ctx.position, ctx.len, ctx.text);
@@ -32,7 +41,7 @@ public class ParseUtil {
 
     public void extractDataInsideBrackets(ParseContext ctx, List<String> list) {
         while(true) {
-            String dataField = readWord(ctx);
+            String dataField = readWordForInsert(ctx);
             if(dataField.isEmpty()) throwError();
             list.add(dataField);
             char nextChar = ctx.text.charAt(ctx.position);

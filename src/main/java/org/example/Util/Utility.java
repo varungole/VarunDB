@@ -142,4 +142,8 @@ public class Utility {
        }
    }
 
+   public static boolean isLetterOrDigitOrBlankSpace(char c) {
+        return Character.isLetterOrDigit(c) || Character.isWhitespace(c);
+   }
+
 }
