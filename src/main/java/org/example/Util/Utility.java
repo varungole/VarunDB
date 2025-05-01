@@ -1,5 +1,8 @@
 package org.example.Util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -69,10 +72,6 @@ public class Utility {
         throw new SqlParseException("Table " + tableName + " already exists!!");
     }
 
-    public static void succesfullyCreatedTable(String tableName, int length) {
-        System.out.println("Inserted " + length + " columns into table " + tableName);
-    }
-
     public static boolean blankQuery(String sqlQuery) {
         if(sqlQuery.isBlank()) {
             System.out.println("Empty query, please try again.");
@@ -111,4 +110,36 @@ public class Utility {
         }
         return true;
     }
+
+   public static void writeMeta(String metaPath, List<String> columns, List<ColumnType> columnTypes) {
+       try(PrintWriter writer = new PrintWriter(metaPath)) {
+           for(int i=0;i<columns.size();i++) {
+               writer.println(columns.get(i) + ":" + columnTypes.get(i));
+           }
+           writer.flush();
+       } catch (FileNotFoundException f) {
+           System.out.println("File does not exist");
+       }
+   }
+
+   public static void writeDB(String dataPath, List<List<String>> rows) {
+       try(PrintWriter writer = new PrintWriter(dataPath)) {
+           for(List<String> row : rows) {
+               writer.write(String.valueOf(row));
+               writer.println();
+           }
+           writer.flush();
+       } catch (FileNotFoundException f) {
+           System.out.println("File does not exist");
+       }
+   }
+
+   public static void createDB(String dbName) {
+       File dbDir = new File("data/" + dbName);
+       if (!dbDir.exists()) {
+           boolean created = dbDir.mkdirs();
+           if (!created) throw new RuntimeException("Failed to create database folder for " + dbName);
+       }
+   }
+
 }

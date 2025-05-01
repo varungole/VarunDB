@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.File;
 import java.util.Scanner;
 
 import org.example.Parsing.Parser;
@@ -8,7 +9,10 @@ import org.example.Util.Utility;
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-
+        File root = new File("data");
+        if(!root.exists()) {
+            root.mkdirs();
+        }
         while(true) {
             System.out.println("Please insert your query");
             if (!sc.hasNextLine()) break;

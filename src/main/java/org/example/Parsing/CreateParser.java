@@ -30,6 +30,7 @@ public class CreateParser {
             System.out.println("Database already exists.");
         } else {
             Storage.databases.put(dbName, new HashMap<>());
+            createDB(dbName);
             System.out.println("Database " + dbName + " created.");
         }
     }
@@ -53,7 +54,10 @@ public class CreateParser {
         if (currentTables.containsKey(tableName)) throwTableExistsError(tableName);
 
         Table newTable = new Table(tableName, columns, columnTypes, new ArrayList<>());
-        currentTables.put(tableName, newTable); // Add to the current DB's table map
+        currentTables.put(tableName, newTable);
         System.out.println("Table " + tableName + " created with " + columns.size() + " columns.");
+        String dbPath = "data/" + currentDatabase + "/";
+        String metaPath = dbPath + tableName + ".meta";
+        writeMeta(metaPath,columns,columnTypes);
     }
 }

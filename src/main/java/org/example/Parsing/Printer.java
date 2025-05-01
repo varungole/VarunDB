@@ -1,9 +1,15 @@
 package org.example.Parsing;
 
 import org.example.Storage.Table;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import static org.example.Storage.Storage.currentDatabase;
 import static org.example.Util.Utility.throwError;
 
 public class Printer {
@@ -14,8 +20,31 @@ public class Printer {
             System.out.println("Table " + table.tableName + " is empty");
             return;
         }
+        String dbPath = "data/" + currentDatabase + "/";
+        String tableName = table.tableName;
+        String dataPath = dbPath + tableName + ".db";
+        List<List<String>> rows = new ArrayList<>();
 
-        List<List<String>> rows = new ArrayList<>(table.rows);
+        try (BufferedReader br = new BufferedReader(new FileReader(dataPath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                // Remove [ and ]
+                if (line.startsWith("[") && line.endsWith("]")) {
+                    line = line.substring(1, line.length() - 1);
+                }
+                // Split by comma
+                String[] values = line.split(",");
+                List<String> row = new ArrayList<>();
+                for (String value : values) {
+                    row.add(value.trim());  // trim to remove spaces
+                }
+                rows.add(row);
+            }
+        } catch (IOException e) {
+            System.out.println("File not found or error reading file");
+            e.printStackTrace();
+        }
 
         if (!whereClause.isEmpty()) {
             int colByIdx = table.columns.indexOf(whereClause.first);

@@ -5,7 +5,6 @@ import static org.example.Util.Utility.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.example.Storage.Storage;
 import org.example.Storage.Table;
@@ -63,6 +62,9 @@ public class ParseRule {
         if(!verifyIfDataInsertedIsCorrect(data,columnSize,columnTypes)) throwError();
         table.rows.add(data);
         System.out.println("Inserted successfully!");
+        String dbPath = "data/" + currentDatabase + "/";
+        String dataPath = dbPath + tableName + ".db";
+        writeDB(dataPath, table.rows);
     }
 
     public void parseDelete() {
