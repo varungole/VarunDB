@@ -47,7 +47,7 @@ public class Printer {
 
         if (!whereClause.isEmpty()) {
             int colByIdx = table.columns.indexOf(whereClause.first);
-            if (colByIdx == -1) throwError();
+            if (colByIdx == -1) throwError("Column does not exists");
 
             int threshold = whereClause.third;
             String op = whereClause.second;
@@ -72,7 +72,7 @@ public class Printer {
 
         if (!orderByKey.isEmpty()) {
             int index = table.columns.indexOf(orderByKey);
-            if (index == -1) throwError();
+            if (index == -1) throwError("Column does not exist");
             List<List<String>> sortedRows = new ArrayList<>(rows);
             sortedRows.sort(Comparator.comparing(row -> row.get(index)));
             rows = sortedRows;

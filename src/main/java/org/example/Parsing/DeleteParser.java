@@ -24,7 +24,7 @@ public class DeleteParser {
         String[] queryMain = new String[2];
         if(subText.contains("=")) {
             queryMain = ctx.text.substring(ctx.position).split("=");
-        } else throwError();
+        } else throwError("error in sql syntax");
         String mainKey = queryMain[0];
         String mainValue = queryMain[1];
         Table table = Storage.getCurrentTables().get(tableName);

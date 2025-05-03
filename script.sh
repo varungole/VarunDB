@@ -8,7 +8,7 @@ cd ../../../build || exit
 java org.example.Main <<EOF
 create database football
 use football
-create table teams (country string,name string,rank int)
-insert into teams values (uk,manutd,13),(uk,liverpool,1),(uk,aston villa,5)
+create table teams (id int,name string)
+insert into teams values (1,manutd)
 select * from teams
 EOF

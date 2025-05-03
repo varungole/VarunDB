@@ -1,29 +1,19 @@
 package org.example.Parsing;
 
-import static org.example.Util.Utility.checkWhiteSpace;
-import static org.example.Util.Utility.throwError;
-
-import java.util.HashSet;
-
-import org.example.Util.Utility;
+import static org.example.Util.Utility.*;
 
 public class Parser {
 
-    private int position;
     private final String text;
-    private final int totalLength;
-    private final HashSet<String> hset;
     private final ParseRule parseRule;
 
     public Parser(String text) {
         this.text = text;
-        position = 0;
-        totalLength = text.length();
-        hset = new HashSet<>();
         parseRule = new ParseRule();
     }
 
     public void ruleSwitchCase(String rule, String subText) {
+        System.out.println(rule + " " + subText);
         parseRule.setText(subText);
         switch (rule) {
             case "select"   ->   parseRule.parseSelect();
@@ -36,21 +26,18 @@ public class Parser {
             case "truncate" ->   parseRule.parseTruncate();
             case "describe" ->   parseRule.parseDescribe();
             case "use" -> parseRule.parseUse();
-            default -> throwError();
+            default -> throwError("Invalid SQL Syntax");
         }
     }
 
-    public void checkFirst(String first) {
-        if(!hset.contains(first.toLowerCase())) throwError();
-        position+=first.length();
-        checkWhiteSpace(position, totalLength, text);
-        position++;
-        ruleSwitchCase(first.toLowerCase(), text.substring(position));
-    }
-
+    //actual parse function
     public void parse() {
-      Utility.setHash(hset);
-      String command = text.substring(0, text.indexOf(' '));
-      checkFirst(command);
+        String[] parts = text.split("\\s+",2);
+        try {
+            Command cmd = Command.valueOf(parts[0].toLowerCase());
+            ruleSwitchCase(cmd.toString(), parts[1]);
+        } catch (IllegalArgumentException e) {
+            throwError("Invalid command " + parts[0]);
+        }
     }
 }

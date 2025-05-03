@@ -39,7 +39,7 @@ public class ParseRule {
         String[] queryMain = new String[2];
         if(subText.contains("=")) {
             queryMain = ctx.text.substring(ctx.position).split("=");
-        } else throwError();
+        } else throwError("Invalid SQL Syntax");
         String mainKey = queryMain[0];
         String mainValue = queryMain[1];
         Table table = Storage.getCurrentTables().get(tableName);
@@ -62,7 +62,7 @@ public class ParseRule {
             parseUtil.checkOpeningBracket(ctx);
             List<String> data = new ArrayList<>();
             parseUtil.extractDataInsideBrackets(ctx, data); // just one group at a time
-            if (!verifyIfDataInsertedIsCorrect(data, columnSize, columnTypes)) throwError();
+            if (!verifyIfDataInsertedIsCorrect(data, columnSize, columnTypes)) throwError("Invalid data type for the column");
             table.rows.add(data);
             ctx.position++;
             if (ctx.position < ctx.len && ctx.text.charAt(ctx.position) == ',') {

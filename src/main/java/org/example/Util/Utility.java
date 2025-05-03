@@ -17,12 +17,12 @@ public class Utility {
 
     public static void checkWhiteSpace(int position, int totalLength, String text) {
         if (position >= totalLength || !Character.isWhitespace(text.charAt(position))) {
-            throwError();
+            throwError("Invalid SQL Syntax");
         }
     }
 
-    public static void throwError(){
-        throw new SqlParseException("Invalid SQL Syntax");
+    public static void throwError(String message){
+        throw new SqlParseException(message);
     }
 
     public static void databaseDoesntExist(){
@@ -31,10 +31,6 @@ public class Utility {
 
     public static void databaseNotDefined(){
         throw new SqlParseException("Which database to work with not defined");
-    }
-
-    public static void setHash(HashSet<String> hset) {
-        hset.addAll(SQL_COMMANDS);
     }
 
     public static final Set<String> SQL_COMMANDS = Set.of(
@@ -73,11 +69,7 @@ public class Utility {
     }
 
     public static boolean blankQuery(String sqlQuery) {
-        if(sqlQuery.isBlank()) {
-            System.out.println("Empty query, please try again.");
-            return true;
-        }
-        return false;
+       return sqlQuery.isBlank();
     }
 
     public static boolean verifyIfDataInsertedIsCorrect(List<String> data, int columnSize,  List<ColumnType> columnTypes) {

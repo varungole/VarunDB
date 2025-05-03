@@ -47,7 +47,7 @@ public class CreateParser {
         List<ColumnType> columnTypes = new ArrayList<>();
         parseUtil.extractDataAndDataTypes(ctx, columns, columnTypes);
 
-        if (columns.isEmpty()) throwError();
+        if (columns.isEmpty()) throwError("Columns are empty");
 
         // Get or create the current database table map
         Map<String, Table> currentTables = databases.get(currentDatabase);

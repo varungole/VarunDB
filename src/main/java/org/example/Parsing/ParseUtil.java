@@ -35,40 +35,40 @@ public class ParseUtil {
     }
 
     public void checkOpeningBracket(ParseContext ctx) {
-        if(ctx.position >= ctx.len || ctx.text.charAt(ctx.position) != '(') throwError();
+        if(ctx.position >= ctx.len || ctx.text.charAt(ctx.position) != '(') throwError("Invalid SQL Syntax");
         ctx.position++;
     }
 
     public void extractDataInsideBrackets(ParseContext ctx, List<String> list) {
         while(true) {
             String dataField = readWordForInsert(ctx);
-            if(dataField.isEmpty()) throwError();
+            if(dataField.isEmpty()) throwError("Data field is empty");
             list.add(dataField);
             char nextChar = ctx.text.charAt(ctx.position);
             if(nextChar == ',') ctx.position++; //continue as we are in same tuple
             else if (nextChar == ')') { // proceed to next tuple
                 break;
-            } else throwError();
+            } else throwError("Invalid SQL Syntax");
         }
     }
 
     public void extractDataAndDataTypes(ParseContext ctx, List<String> list, List<ColumnType> columnType) {
         while(ctx.position < ctx.len && ctx.text.charAt(ctx.position) != ')') {
             String dataField = readWord(ctx);
-            if(dataField.isEmpty()) throwError();
+            if(dataField.isEmpty()) throwError("Data field is empty");
             list.add(dataField);
             checkWhiteSpace(ctx.position, ctx.len, ctx.text);
             ctx.position++;
             String dataType = readWord(ctx);
             ColumnType currColType = ColumnType.fromString(dataType);
             columnType.add(currColType);
-            if(!checkComma(ctx.text.charAt(ctx.position))) throwError();
+            if(!checkComma(ctx.text.charAt(ctx.position))) throwError("Invalid SQL Syntax");
             ctx.position++;
         }
     }
 
     public void verifyAndAdvance(ParseContext ctx, int spaces, String compareWith) {
-        if(ctx.position + spaces > ctx.len || !ctx.text.substring(ctx.position, ctx.position+spaces).equalsIgnoreCase(compareWith)) throwError();
+        if(ctx.position + spaces > ctx.len || !ctx.text.substring(ctx.position, ctx.position+spaces).equalsIgnoreCase(compareWith)) throwError("Invalid SQL Syntax");
         ctx.position +=spaces;
         checkWhiteSpace(ctx.position, ctx.len, ctx.text);
         ctx.position++;
@@ -83,14 +83,14 @@ public class ParseUtil {
     public void extractUpdatePairs(ParseContext ctx, List<Pair> columnName) {
         while(ctx.position < ctx.len) {
             String key = readWord(ctx);
-            if (key.isEmpty()) throwError();
-            if(ctx.position >= ctx.len || ctx.text.charAt(ctx.position) != '=') throwError();
+            if (key.isEmpty()) throwError("Invalid SQL Syntax");
+            if(ctx.position >= ctx.len || ctx.text.charAt(ctx.position) != '=') throwError("Invalid SQL Syntax");
             ctx.position++;
             String value = readWord(ctx);
-            if(value.isEmpty()) throwError();
+            if(value.isEmpty()) throwError("Value is empty");
             columnName.add(new Pair(key, value,0));
             if(ctx.text.charAt(ctx.position) == ' ') break;
-            if(ctx.text.charAt(ctx.position) != ',') throwError();
+            if(ctx.text.charAt(ctx.position) != ',') throwError("INvalid SQL Synta");
             ctx.position++;
         }
     }
@@ -112,7 +112,7 @@ public class ParseUtil {
             extraColumns.add(word);
             if (ctx.position < ctx.len) {
                 if (checkComma(ctx.text.charAt(ctx.position))) ctx.position++;
-                else throwError();
+                else throwError("Invalid SQL Syntax");
             }
         }
     }

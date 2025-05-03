@@ -79,9 +79,9 @@ public class SelectParser {
         List<String> fields = new ArrayList<>();
         int blankPos = ctx.text.indexOf(' ');
         while(ctx.position < blankPos) {
-            String word = parseUtil.readWord(ctx);
-            if(word.isEmpty()) throwError();
-            fields.add(word);
+            String column = parseUtil.readWord(ctx);
+            if(column.isEmpty()) throwError("Column does not exists");
+            fields.add(column);
             ctx.position++;
         }
         //consume from
@@ -96,7 +96,6 @@ public class SelectParser {
         int[] indexes = new int[fields.size()];
         for (int i = 0; i < fields.size(); i++) {
             int index = table.columns.indexOf(fields.get(i));
-            if (index == -1) throwError();
             indexes[i] = index;
         }
 
