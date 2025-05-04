@@ -138,4 +138,10 @@ public class Utility {
         return Character.isLetterOrDigit(c) || Character.isWhitespace(c);
    }
 
+   public static void checkMissingClause(String[] parts) {
+       if (parts.length < 2) {
+           throwError("Missing clause after command “" + parts[0] + "”");
+       }
+   }
+
 }
