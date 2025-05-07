@@ -1,9 +1,11 @@
 package org.example;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import org.example.Parsing.Parser;
 
+import static org.example.LoggerClass.logger;
 import static org.example.Util.Utility.blankQuery;
 
 
@@ -22,7 +24,7 @@ public class Main {
                 Parser parser = new Parser(sqlQuery);
                 parser.parse();
             } catch (Exception e) {
-                System.out.println("error " + e.getMessage());
+                logger.error("error" + e.getMessage());
             }
         }
         sc.close();

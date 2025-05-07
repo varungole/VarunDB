@@ -1,7 +1,9 @@
 package org.example.Parsing;
 
+
+
+import static org.example.LoggerClass.logger;
 import static org.example.Util.Utility.checkMissingClause;
-import static org.example.Util.Utility.throwError;
 
 public class Parser {
     private final String rawSql;
@@ -18,7 +20,7 @@ public class Parser {
         try {
             cmd = Command.fromString(parts[0]);
         } catch (IllegalArgumentException e) {
-            throwError("Unknown SQL command: “" + parts[0] + "”");
+            logger.error("Unknown SQL command: " + parts[0] + " ");
             return;
         }
         String clause = parts[1].trim();

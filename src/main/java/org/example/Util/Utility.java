@@ -10,6 +10,8 @@ import org.example.Parsing.SqlParseException;
 import org.example.Storage.Storage;
 import org.example.Storage.Table;
 
+import static org.example.LoggerClass.logger;
+
 public class Utility {
 
 
@@ -140,7 +142,7 @@ public class Utility {
 
    public static void checkMissingClause(String[] parts) {
        if (parts.length < 2) {
-           throwError("Missing clause after command “" + parts[0] + "”");
+           logger.error("Missing clause after command “" + parts[0] + "”");
        }
    }
 

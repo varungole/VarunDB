@@ -1,7 +1,5 @@
 package org.example.Parsing;
 
-import static org.example.Storage.Storage.currentDatabase;
-import static org.example.Storage.Storage.databases;
 import static org.example.Util.Utility.checkWhiteSpace;
 import static org.example.Util.Utility.throwError;
 

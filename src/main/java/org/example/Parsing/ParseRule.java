@@ -1,5 +1,6 @@
 package org.example.Parsing;
 
+import static org.example.LoggerClass.logger;
 import static org.example.Storage.Storage.*;
 import static org.example.Util.Utility.*;
 
@@ -39,13 +40,13 @@ public class ParseRule {
         String[] queryMain = new String[2];
         if(subText.contains("=")) {
             queryMain = ctx.text.substring(ctx.position).split("=");
-        } else throwError("Invalid SQL Syntax");
+        } else logger.info("Invalid syntax");
         String mainKey = queryMain[0];
         String mainValue = queryMain[1];
         Table table = Storage.getCurrentTables().get(tableName);
         int index = table.columns.indexOf(mainKey);
         parseUtil.iterate(table,index,mainValue,columnName);
-        System.out.println("Updated successfully!");
+        logger.info("Updated successfully!");
     }
 
     public void parseInsert() {
@@ -62,7 +63,7 @@ public class ParseRule {
             parseUtil.checkOpeningBracket(ctx);
             List<String> data = new ArrayList<>();
             parseUtil.extractDataInsideBrackets(ctx, data); // just one group at a time
-            if (!verifyIfDataInsertedIsCorrect(data, columnSize, columnTypes)) throwError("Invalid data type for the column");
+            if (!verifyIfDataInsertedIsCorrect(data, columnSize, columnTypes)) logger.error("Invalid data type for the column");
             table.rows.add(data);
             ctx.position++;
             if (ctx.position < ctx.len && ctx.text.charAt(ctx.position) == ',') {
@@ -72,7 +73,7 @@ public class ParseRule {
             }
         }
 
-        System.out.println("Inserted successfully!");
+        logger.info("Inserted successfully!!");
         String dbPath = "data/" + currentDatabase + "/";
         String dataPath = dbPath + tableName + ".db";
         writeDB(dataPath, table.rows);

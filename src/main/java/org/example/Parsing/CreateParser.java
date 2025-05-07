@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.example.LoggerClass.logger;
 import static org.example.Storage.Storage.*;
 import static org.example.Util.Utility.*;
 
@@ -27,11 +28,11 @@ public class CreateParser {
         parseUtil.verifyAndAdvance(ctx,8, "database");
         String dbName = parseUtil.readWord(ctx);
         if (Storage.databases.containsKey(dbName)) {
-            System.out.println("Database already exists.");
+            logger.error("Database already exists.s");
         } else {
             Storage.databases.put(dbName, new HashMap<>());
             createDB(dbName);
-            System.out.println("Database " + dbName + " created.");
+            logger.info("Database " + dbName + " created.");
         }
     }
 
@@ -47,7 +48,9 @@ public class CreateParser {
         List<ColumnType> columnTypes = new ArrayList<>();
         parseUtil.extractDataAndDataTypes(ctx, columns, columnTypes);
 
-        if (columns.isEmpty()) throwError("Columns are empty");
+        if (columns.isEmpty()) {
+            logger.error("Columns are empty");
+        }
 
         // Get or create the current database table map
         Map<String, Table> currentTables = databases.get(currentDatabase);
